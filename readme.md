@@ -1,6 +1,8 @@
 纯C# FTP服务器
 -
 
+感谢[Rytisk Kaplunas](https://github.com/Rytisk)的工作
+
 添加了一些命令(LIST -l,SIZE,RNFR,RNTO,SYST等),修复了一些BUG
 
 添加了对权限控制的支持
@@ -19,6 +21,8 @@
 
 FTP-Server written in full C#
 -
+
+Thanks[Rytisk Kaplunas](https://github.com/Rytisk) for his work 
 
 Add some commands (LIST -l,SIZE,RNFR,RNTO,SYST), bug fixs
 
