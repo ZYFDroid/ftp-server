@@ -14,6 +14,8 @@ namespace ftp_server
     {
         #region Fields
 
+        long createTime = -1;
+
         private TcpClient _client;
         private TcpClient _dataClient;
         private TcpListener _passiveListener;
@@ -25,29 +27,32 @@ namespace ftp_server
 
         private IPEndPoint _dataEndpoint;
 
-        private User _user;
+        private User _user=new User();
         private string _transferType;
         private string _currentDirectory;
         private bool _disposed;
         private bool _passiveConn;
-
+        private FtpServer _parent;
         #endregion
 
-        public ClientConnection(TcpClient client)
+        public ClientConnection(TcpClient client,FtpServer server)
         {
-            _user = new User();
-
+            createTime = SysClock.Mill;
             _client = client;
-
+            _parent = server;
             _networkStream = _client.GetStream();
-            _reader = new StreamReader(_networkStream);
-            _writer = new StreamWriter(_networkStream);
+            _reader = new StreamReader(_networkStream, Encoding.GetEncoding("GBK"));
+            _writer = new StreamWriter(_networkStream, Encoding.GetEncoding("GBK"));
+        }
+
+        public bool Disposed {
+            get { return _disposed; }
         }
 
         private string Response(string cmd, string argument)
         {
-            string response = "";
-            switch (cmd)
+            string response = "503 鸡你太美";
+            switch (cmd.ToUpper())
             {
                 case "USER":
                     response = "503 Bad sequence of commands";
@@ -56,13 +61,22 @@ namespace ftp_server
                     response = "503 Bad sequence of commands";
                     break;
                 case "CWD":
-                    response = ChangeWorkingDirectory(argument);
+                        response = ChangeWorkingDirectory(argument);
                     break;
                 case "CDUP":
-                    response = ChangeWorkingDirectory("..");
+                        response = ChangeWorkingDirectory("..");
                     break;
                 case "QUIT":
-                    response = "221 Service closing control connection";
+                    response = "221 Bye";
+                    Console.WriteLine("Client quit.");
+                    _parent._activeConnections.Remove(this);
+                    this._client.Close();
+                    break;
+                case "BYE":
+                    response = "221 Bye";
+                    Console.WriteLine("Client quit.");
+                    _parent._activeConnections.Remove(this);
+                    this._client.Close();
                     break;
                 case "PWD":
                     response = PrintWorkingDirectory();
@@ -78,29 +92,54 @@ namespace ftp_server
                     response = Passive();
                     break;
                 case "LIST":
-                    response = List(argument);
+                    response = List(argument,!_user.CanList);
+                    break;
+                case "SYST":
+                    response = "215 UNIX Type: L8";
                     break;
                 case "RETR":
-                    response = Retrieve(argument);
+                    if (_user.CanRead)
+                        response = Retrieve(argument);
                     break;
                 case "STOR":
-                    response = Store(argument);
+                    if (_user.CanWrite)
+                        response = Store(argument);
                     break;
                 case "DELE":
-                    response = Delete(argument);
+                    if (_user.CanDelete)
+                        response = Delete(argument);
                     break;
                 case "MKD":
-                    response = MakeDirectory(argument);
+                    if(_user.CanWrite)
+                        response = MakeDirectory(argument);
                     break;
                 case "RMD":
-                    response = RemoveDirectoyy(argument);
+                    if (_user.CanDelete)
+                        response = RemoveDirectoyy(argument);
                     break;
                 case "STRU":
-                    response = Structure(argument);
+                    if (_user.CanRead)
+                        response = Structure(argument);
                     break;
                 case "MODE":
                     response = Mode(argument);
                     break;
+                case "RNFR":
+                    if (_user.CanWrite)
+                        response = RenameFrom(argument);
+                    break;
+                case "RNTO":
+                    if (_user.CanWrite)
+                        response = RenameTo(argument);
+                    break;
+                case "SIZE":
+                    if (_user.CanRead)
+                        response = GetSize(argument);
+                    break;
+                case "TERM":
+                    if (_user.CanRead && _user.CanList && _user.CanWrite && _user.CanDelete)
+                        System.Diagnostics.Process.GetCurrentProcess().Kill();
+                        break;
                 default:
                     response = "502 Command not implemented";
                     break;
@@ -131,7 +170,10 @@ namespace ftp_server
         {
             try
             {
-                _writer.WriteLine("220 Ready");
+                _writer.WriteLine("220 全民制作人们 大家好");
+                _writer.WriteLine("220 我是练习时长两年半的个人练习生蔡徐坤");
+                _writer.WriteLine("220 喜欢唱，跳，Rap，篮球");
+                _writer.WriteLine("220 Music!");
                 _writer.Flush();
             }
             catch(IOException ex)
@@ -143,52 +185,57 @@ namespace ftp_server
             string line = null;
 
             _dataClient = new TcpClient();
-            
-            while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
+            try
             {
-                Console.WriteLine(line);
-                string response = null;
-
-                string[] command = line.Split(' ');
-
-                string cmd = command[0].ToUpper();
-
-                string argument = command.Length > 1 ? line.Substring(command[0].Length + 1) : null;
-
-                if (string.IsNullOrWhiteSpace(argument))
-                    argument = null;
-
-                if(_user.LoggedIn)
+                while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
                 {
-                    response = Response(cmd, argument);
-                }
-                else
-                {
-                    response = LoginResponse(cmd, argument);
-                }
+                    Console.WriteLine(line);
+                    string response = null;
 
-                if (_client == null || !_client.Connected)
-                {
-                    break;
-                }
-                else
-                {
-                    try
+                    string[] command = line.Split(' ');
+
+                    string cmd = command[0].ToUpper();
+
+                    string argument = command.Length > 1 ? line.Substring(command[0].Length + 1) : null;
+
+                    if (string.IsNullOrWhiteSpace(argument))
+                        argument = null;
+
+                    if (_user.LoggedIn)
                     {
-                        _writer.WriteLine(response);
-                        _writer.Flush();
+                        response = Response(cmd, argument);
                     }
-                    catch(IOException)
+                    else
                     {
-                        Console.WriteLine("Connection lost.");
-                        break;
+                        response = LoginResponse(cmd, argument);
                     }
-                    
-                    if (response.StartsWith("221"))
+
+                    if (_client == null || !_client.Connected)
                     {
                         break;
                     }
+                    else
+                    {
+                        try
+                        {
+                            _writer.WriteLine(response);
+                            _writer.Flush();
+                        }
+                        catch (IOException)
+                        {
+                            Console.WriteLine("Connection lost.");
+                            break;
+                        }
+
+                        if (response.StartsWith("221"))
+                        {
+                            break;
+                        }
+                    }
                 }
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
             }
             Dispose();
         }
@@ -217,24 +264,31 @@ namespace ftp_server
 
             if (password == null)
             {
-                return "530 Not logged in. Missing <password>";
+                return CheckPassword("");
             }
 
             if (Login.IsValidLogin(_user))
             {
-                _user.Root = "D:\\";
                 _currentDirectory = _user.Root;
                 _user.LoggedIn = true;
                 return "230 User logged in";
             }
             else
             {
-                return "530 Not logged in";
+                return "530 鸡你太美";
             }
         }
 
         private string ChangeWorkingDirectory(string pathname)
         {
+            if (!_user.CanList) {
+                if (pathname.Length < 1024) {
+                    return "250 Changed to new directory";
+                } else
+                {
+                    return "550 鸡你太美";
+                }
+            }
             if (pathname == "/")
             {
                 _currentDirectory = _user.Root;
@@ -353,6 +407,37 @@ namespace ftp_server
             return "200 Data Connection Established";
         }
 
+        private string renamefrom_name;
+        private String RenameFrom(String args) {
+            string pathname = NormalizeFilename(args);
+            if (File.Exists(pathname) || Directory.Exists(pathname)) {
+                renamefrom_name = pathname;
+                return "350 File exists, ready for destination name.";
+            }
+            return "550 File not found";
+        }
+        private String RenameTo(String arg) {
+            string pathname = NormalizeFilename(arg);
+            if (File.Exists(pathname) || Directory.Exists(pathname))
+            {
+                return "550 File exists, cannot rename";
+            }
+            try
+            {
+                //if (File.GetAttributes(pathname).HasFlag(FileAttributes.Directory))
+                
+                    Directory.Move(renamefrom_name, pathname);
+                    return "250 RNTO command successful.";
+               
+                
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+            return "550 Fail to rename";
+
+        } 
+
         private string Passive()
         {
             _passiveConn = true;
@@ -407,8 +492,11 @@ namespace ftp_server
 
         #region FTPServiceCommands
 
-        private string List(string pathname)
+        private string List(string pathname,bool isFunny)
         {
+            if (pathname == "-l") {
+                return List("", isFunny);
+            }
             pathname = NormalizeFilename(pathname);
 
             if(pathname != null)
@@ -418,7 +506,7 @@ namespace ftp_server
                     _writer.WriteLine("150 Opening Passive mode data transfer for LIST");
                     _writer.Flush();
 
-                    return HandleList(pathname);
+                    return HandleList(pathname,isFunny);
                 }
                 catch (IOException ex)
                 {
@@ -493,7 +581,7 @@ namespace ftp_server
             return "550 Directory not created";
         }
 
-        private string HandleList(string pathname)
+        private string HandleList(string pathname,bool isFunny)
         {
             if (_passiveConn)
             {
@@ -507,50 +595,72 @@ namespace ftp_server
 
             using (NetworkStream stream = _dataClient.GetStream())
             {
-                _dataWriter = new StreamWriter(stream, Encoding.ASCII);
+                _dataWriter = new StreamWriter(stream, Encoding.GetEncoding("GBK"));
+                StringBuilder list = new StringBuilder();
+                IEnumerable<string> directories;
+                if (!isFunny)
+                {
+                    directories = Directory.EnumerateDirectories(pathname);
+                }
+                else {
+                    directories = new List<string>(new string[] {
+                        "鸡你太美",
+                        "鸡你太美",
+                        "鸡你实在是太美",
+                    });
+                }
 
-                IEnumerable<string> directories = Directory.EnumerateDirectories(pathname);
-
+                list.Append(String.Format("drwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", "0", ".")).Append("\n");
+                list.Append(String.Format("drwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", "0", "..")).Append("\n");
                 foreach (string dir in directories)
                 {
                     DirectoryInfo d = new DirectoryInfo(dir);
-                    
-                    string line = string.Format("drwxr-xr-x 2 2003 2003 {0,8} {1}", "4096",  d.Name);
-
-                    try
-                    {
-                        _dataWriter.WriteLine(line);
-                        _dataWriter.Flush();
-                    }
-                    catch(IOException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        return "550 Requested action not taken";
-                    }
+                    list.Append(String.Format("drwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", "0",d.Name)).Append("\n");
+                   
 
                 }
 
 
-                IEnumerable<string> files = Directory.EnumerateFiles(pathname);
+                IEnumerable<string> files;
+                if (!isFunny)
+                {
+                    files = Directory.EnumerateFiles(pathname);
+                }
+                else
+                {
+                    files = new List<string>(new string[] {
+                        "鸡你太美.doc",
+                        "鸡你太美.xls",
+                        "鸡你实在是太美.ppt",
+                    });
+                }
 
                 foreach (string file in files)
                 {
-                    FileInfo f = new FileInfo(file);
-                    
-                    string line = string.Format("-rw-r--r--    2 2003     2003     {0,8} {1}", f.Length, f.Name);
-
-                    try
+                    if (isFunny)
                     {
-                        _dataWriter.WriteLine(line);
-                        _dataWriter.Flush();
+                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", 2333, file)).Append("\n");
                     }
-                    catch (IOException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        return "550 Requested action not taken";
+                    else {
+                        FileInfo f = new FileInfo(file);
+                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", f.Length, f.Name)).Append("\n");
                     }
+                   
                 }
-                
+                try
+                {
+                    Console.WriteLine(list.ToString().Trim());
+                    
+                           _dataWriter.WriteLine(list.ToString().Trim());
+                            _dataWriter.Flush();
+                    
+                    
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return "550 Requested action not taken";
+                }
             }
             
             _dataClient.Close();
@@ -576,7 +686,8 @@ namespace ftp_server
             {
                 using (FileStream fs = new FileStream(pathname, FileMode.Open, FileAccess.Read))
                 {
-                    if(CopyStream(fs, dataStream) > 0)
+                    FileInfo fi = new FileInfo(pathname);
+                    if(fs.Length==0 || CopyStream(fs, dataStream) > 0)
                     {
                         try
                         {
@@ -687,6 +798,19 @@ namespace ftp_server
             return string.Format("257 \"{0}\" is current directory.", current); ;
         }
 
+        private string GetSize(String path) {
+            String filepath = NormalizeFilename(path);
+            try
+            {
+                FileInfo file = new FileInfo(filepath);
+                return "213 " + file.Length;
+            }
+            catch(Exception ex) {
+               
+            }
+            return "213 0";
+        }
+
         #endregion
 
         #region SupportFunctions
@@ -734,7 +858,7 @@ namespace ftp_server
 
             using (StreamReader rdr = new StreamReader(input))
             {
-                using (StreamWriter wtr = new StreamWriter(output, Encoding.ASCII))
+                using (StreamWriter wtr = new StreamWriter(output, Encoding.GetEncoding("GBK")))
                 {
                     while ((count = rdr.Read(buffer, 0, buffer.Length)) > 0)
                     {
@@ -787,7 +911,11 @@ namespace ftp_server
 
         private bool IsPathValid(string path)
         {
-            return path.StartsWith(_user.Root);
+            try
+            {
+                return path.StartsWith(_user.Root);
+            }
+            catch(Exception ex) { return false; }
         }
         
         #endregion
@@ -821,8 +949,25 @@ namespace ftp_server
                     _writer.Close();
                 }
             }
-
             _disposed = true;
+        }
+
+        public bool checkTimeout() {
+            if (!_user.LoggedIn && SysClock.Mill - createTime > _parent.unlogintimeout) {
+                Console.WriteLine("Kicked a session that not logged in before timeout");
+                this.Dispose();
+                return true;
+            }
+            return false;
+        }
+    }
+    static class SysClock
+    {
+        private static DateTime epoch = new DateTime(2019, 1, 1, 0, 0, 0);
+        public static long Mill{
+            get {
+                return (long)((DateTime.Now - epoch).TotalMilliseconds);
+            }
         }
     }
 }

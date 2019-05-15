@@ -12,17 +12,25 @@ namespace ftp_server
 {
     class FtpServer : IDisposable
     {
+        public long unlogintimeout = 16000;
+
+        public int userLimits = 30;
+
         private TcpListener _listener = null;
         private int _port;
         private bool _disposed;
         private bool _listening;
-        private List<ClientConnection> _activeConnections;
+        private Thread _checkThread;
+        public List<ClientConnection> _activeConnections;
 
         public FtpServer(int port)
         {
             _port = port;
         }
 
+        public bool Disposed {
+            get { return _disposed; }
+        }
 
         public void Start()
         {
@@ -33,7 +41,8 @@ namespace ftp_server
             _listener.Start();
 
             _activeConnections = new List<ClientConnection>();
-
+            _checkThread = new Thread(checkUnloginedSession);
+            _checkThread.Start();
             _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
         }
 
@@ -50,28 +59,66 @@ namespace ftp_server
         {
             if (_listening)
             {
-                _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
+                try
+                {
+                    _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
 
-                TcpClient client = _listener.EndAcceptTcpClient(result);
+                    TcpClient client = _listener.EndAcceptTcpClient(result);
 
-                ClientConnection clientConnection = new ClientConnection(client);
+                    if (_activeConnections.Count >= userLimits)
+                    {
+                        try
+                        {
+                            byte[] retn = Encoding.GetEncoding("GBK").GetBytes("220 鸡你太美\r\n");
+                            client.GetStream().Write(retn, 0, retn.Length);
+                        }
+                        catch { }
+                        client.Close();
+                        return;
+                    }
 
-                _activeConnections.Add(clientConnection);
+                    ClientConnection clientConnection = new ClientConnection(client, this);
 
-                clientConnection.HandleClient();
+                    _activeConnections.Add(clientConnection);
+
+                    clientConnection.HandleClient();
+                }
+                catch (Exception ex){ Console.WriteLine(ex.Message);Dispose(); }
             }
         }
-        
+
+        private void checkUnloginedSession() {
+            try
+            {
+                while (true)
+                {
+                    try
+                    {
+                        foreach(ClientConnection cln in _activeConnections) {
+                            cln.checkTimeout();
+                            if (cln.Disposed) { _activeConnections.Remove(cln); }
+                        }
+                        Thread.Sleep(2560);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+        }
+
+        public int UserCount {
+            get { return _activeConnections.Count; }
+        }
 
         public void Dispose()
         {
             if (!_disposed)
             {
                 Stop();
-
+                
                 foreach (ClientConnection conn in _activeConnections)
                 {
-                    conn.Dispose();
+                   conn.Dispose();
                 }
             }
 
