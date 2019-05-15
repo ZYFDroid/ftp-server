@@ -16,8 +16,20 @@ namespace ftp_server
         private bool _r = false;
         private bool _w = false;
         private bool _d = false;
-
+        private string _remoteAddress;
         private bool _loggedIn;
+
+        public string RemoteAddress
+        {
+            get
+            {
+                return _remoteAddress;
+            }
+            set
+            {
+                _remoteAddress = value;
+            }
+        }
 
         public string Username
         {

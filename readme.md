@@ -1,8 +1,8 @@
-#纯C# FTP服务器
+# 纯C# FTP服务器
 
 感谢[Rytisk Kaplunas](https://github.com/Rytisk)的工作
 
-##和原仓库相比
+## 和原仓库相比
 
 添加了一些命令(LIST -l,SIZE,RNFR,RNTO,SYST等),修复了一些BUG
 
@@ -20,12 +20,12 @@
 
 添加一个TERM命令供拥有完整权限的用户远程停止FTP服务器
 
-#FTP-Server written in full C#
+# FTP-Server written in full C#
 
 
 Thanks [Rytisk Kaplunas](https://github.com/Rytisk) for his work 
 
-##Compared to origin repository
+## Compared to origin repository
 
 Add some commands (LIST -l,SIZE,RNFR,RNTO,SYST), bug fixs
 

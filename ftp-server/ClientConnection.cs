@@ -37,6 +37,11 @@ namespace ftp_server
 
         public ClientConnection(TcpClient client,FtpServer server)
         {
+            try
+            {
+                _user.RemoteAddress = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address.ToString();
+            }
+            catch { _user.RemoteAddress = "unknown_host"; }
             createTime = SysClock.Mill;
             _client = client;
             _parent = server;

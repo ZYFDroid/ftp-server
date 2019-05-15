@@ -18,8 +18,7 @@ namespace ftp_server
             for (int i = 1; i <= 30; i++) {
                 Login.AddUser(new User(String.Format("s66{0:D2}",i), "password", "lrwd", "D:\\FTP\\s66"+String.Format("{0:D2}",i), true));
             }
-
-
+            
             ftpServer.Start();
             Console.WriteLine("Server started");
             string title = "鸡你太美~~，鸡你太美~~，鸡你实在是太美~~! ";
