@@ -12,7 +12,22 @@ namespace ftp_server
         private static SortedList<string, User> userList = new SortedList<string, User>();
         public static bool IsValidLogin(User user)
         {
-            if (!UsernameExists(user.Username)) {
+            if (!userList.ContainsKey(user.Username)) {
+                failcount++;
+                failcount++;
+                if (failcount >= trigger)//Triggle fake account
+                {
+                    failcount = 0;
+                    user.Username = "蔡徐坤";
+                    user.Root = "C:\\蔡徐坤";
+                    user.CanRead = false;
+                    user.IsFake = true;
+                    user.CanWrite = false;
+                    user.CanDelete = false;
+                    user.CanList = false;
+                    return true;
+                }
+                System.Threading.Thread.Sleep(3000);
                 return false;
             }
             User u = userList[user.Username];
@@ -42,10 +57,11 @@ namespace ftp_server
                     if (failcount >= trigger)//Triggle fake account
                     {
                         failcount = 0;
-
+                        user.Username = "蔡徐坤";
                         user.Root = "C:\\蔡徐坤";
                         user.CanRead = false;
                         user.CanWrite = false;
+                        user.IsFake = true;
                         user.CanDelete = false;
                         user.CanList = false;
                         return true;
@@ -58,7 +74,9 @@ namespace ftp_server
 
         public static bool UsernameExists(string username)
         {
-            return userList.ContainsKey(username);
+            //return userList.ContainsKey(username);
+            //avoid attempt for username
+            return true;
         }
         public static void AddUser(User user) {
             String un = user.Username;

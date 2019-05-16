@@ -35,6 +35,8 @@ namespace ftp_server
         private FtpServer _parent;
         #endregion
 
+        bool _isValidSession = false;
+
         public ClientConnection(TcpClient client,FtpServer server)
         {
             try
@@ -56,7 +58,8 @@ namespace ftp_server
 
         private string Response(string cmd, string argument)
         {
-            string response = "503 鸡你太美";
+            _isValidSession = true;
+            string response = "503 Bad sequence of commands";
             switch (cmd.ToUpper())
             {
                 case "USER":
@@ -64,6 +67,9 @@ namespace ftp_server
                     break;
                 case "PASS":
                     response = "503 Bad sequence of commands";
+                    break;
+                case "NOOP":
+                    response = "200 OK";
                     break;
                 case "CWD":
                         response = ChangeWorkingDirectory(argument);
@@ -73,15 +79,11 @@ namespace ftp_server
                     break;
                 case "QUIT":
                     response = "221 Bye";
-                    Console.WriteLine("Client quit.");
-                    _parent._activeConnections.Remove(this);
-                    this._client.Close();
+                    Dispose();
                     break;
                 case "BYE":
                     response = "221 Bye";
-                    Console.WriteLine("Client quit.");
-                    _parent._activeConnections.Remove(this);
-                    this._client.Close();
+                    Dispose();
                     break;
                 case "PWD":
                     response = PrintWorkingDirectory();
@@ -183,7 +185,7 @@ namespace ftp_server
             }
             catch(IOException ex)
             {
-                Console.WriteLine(ex.Message);
+                ConsoleWriteLine(ex.Message);
                 return;
             }
 
@@ -194,7 +196,7 @@ namespace ftp_server
             {
                 while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
                 {
-                    Console.WriteLine(line);
+                    ConsoleWriteLine(String.Format("[FROM {0}@{1}] {2}",_user.Username,_user.RemoteAddress,line));
                     string response = null;
 
                     string[] command = line.Split(' ');
@@ -223,12 +225,13 @@ namespace ftp_server
                     {
                         try
                         {
+                            ConsoleWriteLine(String.Format("[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
                             _writer.WriteLine(response);
                             _writer.Flush();
                         }
                         catch (IOException)
                         {
-                            Console.WriteLine("Connection lost.");
+                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "Connection Lost."));
                             break;
                         }
 
@@ -240,7 +243,7 @@ namespace ftp_server
                 }
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
+                ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress,ex.Message));
             }
             Dispose();
         }
@@ -280,7 +283,7 @@ namespace ftp_server
             }
             else
             {
-                return "530 鸡你太美";
+                return "530 Username or password incorrect";
             }
         }
 
@@ -291,7 +294,7 @@ namespace ftp_server
                     return "250 Changed to new directory";
                 } else
                 {
-                    return "550 鸡你太美";
+                    return "550 Permission Denied";
                 }
             }
             if (pathname == "/")
@@ -437,7 +440,7 @@ namespace ftp_server
                 
             }
             catch (Exception ex) {
-                Console.WriteLine(ex.Message);
+                ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
             }
             return "550 Fail to rename";
 
@@ -515,7 +518,7 @@ namespace ftp_server
                 }
                 catch (IOException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                 }
 
             }
@@ -615,12 +618,12 @@ namespace ftp_server
                     });
                 }
 
-                list.Append(String.Format("drwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", "0", ".")).Append("\n");
-                list.Append(String.Format("drwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", "0", "..")).Append("\n");
+                list.Append(String.Format("drwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", "0", ".")).Append("\n");
+                list.Append(String.Format("drwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", "0", "..")).Append("\n");
                 foreach (string dir in directories)
                 {
                     DirectoryInfo d = new DirectoryInfo(dir);
-                    list.Append(String.Format("drwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", "0",d.Name)).Append("\n");
+                    list.Append(String.Format("drwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", "0",d.Name)).Append("\n");
                    
 
                 }
@@ -644,26 +647,22 @@ namespace ftp_server
                 {
                     if (isFunny)
                     {
-                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", 2333, file)).Append("\n");
+                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", 2333, file)).Append("\n");
                     }
                     else {
                         FileInfo f = new FileInfo(file);
-                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,11} Aug 31 00:00 {1}", f.Length, f.Name)).Append("\n");
+                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", f.Length, f.Name)).Append("\n");
                     }
                    
                 }
                 try
                 {
-                    Console.WriteLine(list.ToString().Trim());
-                    
-                           _dataWriter.WriteLine(list.ToString().Trim());
-                            _dataWriter.Flush();
-                    
-                    
+                    _dataWriter.WriteLine(list.ToString().Trim());
+                    _dataWriter.Flush();
                 }
                 catch (IOException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                     return "550 Requested action not taken";
                 }
             }
@@ -701,7 +700,7 @@ namespace ftp_server
                         }
                         catch(IOException ex)
                         {
-                            Console.WriteLine(ex.Message);
+                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                         }
                     }
                 }
@@ -739,6 +738,9 @@ namespace ftp_server
 
             if (pathname != null)
             {
+                if (File.Exists(pathname) || Directory.Exists(pathname)) {
+                    return "450 File already exists.";
+                }
                 
                 if (_passiveConn)
                 {
@@ -782,7 +784,7 @@ namespace ftp_server
                         }
                         catch(IOException ex)
                         {
-                            Console.WriteLine(ex.Message);
+                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                         }
                     }
                 }
@@ -845,9 +847,9 @@ namespace ftp_server
                     output.Write(buffer, 0, count);
                     total += count;
                 }
-                catch(IOException ioe)
+                catch(IOException ex)
                 {
-                    Console.WriteLine(ioe.Message);
+                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                     return -1; 
                 }                
             }
@@ -872,9 +874,9 @@ namespace ftp_server
                             wtr.Write(buffer, 0, count);
                             total += count;
                         }
-                        catch (IOException ioe)
+                        catch (IOException ex)
                         {
-                            Console.WriteLine(ioe.Message);
+                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                             return -1;
                         }
                     }
@@ -954,16 +956,32 @@ namespace ftp_server
                     _writer.Close();
                 }
             }
+            ConsoleWriteLine(String.Format("[LEAVE {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "User quit"));
+            if (!_isValidSession || _user.IsFake)
+            {
+                _parent.onIpDisturb(_user.RemoteAddress);
+            }
+            else {
+                _parent.clearIpDisturb(_user.RemoteAddress);
+            }
             _disposed = true;
         }
 
         public bool checkTimeout() {
-            if (!_user.LoggedIn && SysClock.Mill - createTime > _parent.unlogintimeout) {
-                Console.WriteLine("Kicked a session that not logged in before timeout");
+            if ((!_user.LoggedIn || _user.IsFake) && SysClock.Mill - createTime > _parent.unlogintimeout) {
+                ConsoleWriteLine("[WARNING] Kicked a user that not logged in before timeout or is fake");
                 this.Dispose();
                 return true;
             }
             return false;
+        }
+        private void ConsoleWriteLine(string str)
+        {
+            try
+            {
+                _parent.ConsoleWriteLine(str);
+            }
+            catch (NullReferenceException ex) { }
         }
     }
     static class SysClock

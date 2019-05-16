@@ -9,15 +9,28 @@ namespace ftp_server
 {
     class User
     {
-        private string _username;
-        private string _password;
-        private string _root;
+        private string _username="{NONE}";
+        private string _password="";
+        private string _root="";
         private bool _l = false;
         private bool _r = false;
         private bool _w = false;
         private bool _d = false;
-        private string _remoteAddress;
-        private bool _loggedIn;
+        private string _remoteAddress="U";
+        private bool _loggedIn=false;
+        private bool _fake = false;
+
+        public bool IsFake//Fake user
+        {
+            get
+            {
+                return _fake;
+            }
+            set
+            {
+                _fake = value;
+            }
+        }
 
         public string RemoteAddress
         {

@@ -12,9 +12,18 @@ namespace ftp_server
 {
     class FtpServer : IDisposable
     {
+        public event EventHandler<string> OnConsoleWriteLine;
+
         public long unlogintimeout = 16000;
 
         public int userLimits = 30;
+
+        public int ipBlockTrigger = 20;
+
+        public long ipBlockTime = 60000;
+
+        internal SortedList<string, long> blockedIpAddress=new SortedList<string, long>();
+        internal SortedList<string, int> blockingcount=new SortedList<string, int>();
 
         private TcpListener _listener = null;
         private int _port;
@@ -34,8 +43,8 @@ namespace ftp_server
 
         public void Start()
         {
+            ConsoleWriteLine("[Server] Server started");
             _listener = new TcpListener(IPAddress.Any, _port);
-
 
             _listening = true;
             _listener.Start();
@@ -62,29 +71,85 @@ namespace ftp_server
                 try
                 {
                     _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
-
-                    TcpClient client = _listener.EndAcceptTcpClient(result);
-
-                    if (_activeConnections.Count >= userLimits)
+                    try
                     {
-                        try
+                        TcpClient client = _listener.EndAcceptTcpClient(result);
+
+                        if (_activeConnections.Count >= userLimits)
                         {
-                            byte[] retn = Encoding.GetEncoding("GBK").GetBytes("220 鸡你太美\r\n");
-                            client.GetStream().Write(retn, 0, retn.Length);
+                            try
+                            {
+                                byte[] retn = Encoding.GetEncoding("GBK").GetBytes("220 鸡你太美\r\n");
+                                client.GetStream().Write(retn, 0, retn.Length);
+                            }
+                            catch { }
+                            client.Close();
+                            return;
                         }
-                        catch { }
-                        client.Close();
-                        return;
+                        string ip = ((IPEndPoint)(client.Client.RemoteEndPoint)).Address.ToString();
+                        if (checkIpBlocked(ip))
+                        {
+                            try
+                            {
+                                byte[] retn = Encoding.GetEncoding("GBK").GetBytes("220 鸡你太美\r\n");
+                                client.GetStream().Write(retn, 0, retn.Length);
+                            }
+                            catch { }
+                            client.Close();
+                            return;
+                        }
+
+                        ClientConnection clientConnection = new ClientConnection(client, this);
+
+                        _activeConnections.Add(clientConnection);
+
+                        clientConnection.HandleClient();
                     }
-
-                    ClientConnection clientConnection = new ClientConnection(client, this);
-
-                    _activeConnections.Add(clientConnection);
-
-                    clientConnection.HandleClient();
+                    catch (Exception ex) { ConsoleWriteLine("[SERVER_ERROR] " + ex.Message); }
                 }
-                catch (Exception ex){ Console.WriteLine(ex.Message);Dispose(); }
+                catch (Exception ex){ ConsoleWriteLine("[TERM] "+ex.Message); Dispose(); }
             }
+        }
+
+        internal void ConsoleWriteLine(string str) {
+            try
+            {
+                OnConsoleWriteLine.Invoke(this, str);
+            }
+            catch (NullReferenceException ex) { }
+        }
+
+        internal void onIpDisturb(string ip) {
+            if (blockedIpAddress.ContainsKey(ip)) { return; }
+            if (blockingcount.ContainsKey(ip))
+            {
+                blockingcount[ip]++;
+                if (blockingcount[ip] > ipBlockTrigger)
+                {
+                    blockingcount.Remove(ip);
+                    blockedIpAddress.Add(ip, SysClock.Mill + ipBlockTime);
+                    ConsoleWriteLine("[IPBLOCKER] Blocked " + ip);
+                }
+            }
+            else {
+                blockingcount.Add(ip, 1);
+            }
+        }
+        internal void clearIpDisturb(string ip)
+        {
+            blockingcount.Remove(ip);
+            blockedIpAddress.Remove(ip);
+        }
+
+        internal bool checkIpBlocked(string ip) {
+            if (!blockedIpAddress.ContainsKey(ip)) { return false; }
+            List<KeyValuePair<string, long>> iplist = blockedIpAddress.ToList();
+            foreach (KeyValuePair < string, long > ipinfo in iplist) {
+                if (ipinfo.Value < SysClock.Mill) {
+                    blockedIpAddress.Remove(ipinfo.Key);
+                }
+            }
+            return blockedIpAddress.ContainsKey(ip);
         }
 
         private void checkUnloginedSession() {
@@ -94,11 +159,13 @@ namespace ftp_server
                 {
                     try
                     {
-                        foreach(ClientConnection cln in _activeConnections) {
+                        
+                        for(int i=_activeConnections.Count-1;i>=0;i--) {
+                            ClientConnection cln = _activeConnections[i];
                             cln.checkTimeout();
-                            if (cln.Disposed) { _activeConnections.Remove(cln); }
+                            if (cln.Disposed) { _activeConnections.RemoveAt(i); }
                         }
-                        Thread.Sleep(2560);
+                        Thread.Sleep(666);
                     }
                     catch { }
                 }
