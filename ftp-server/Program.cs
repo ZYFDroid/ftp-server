@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace ftp_server
 {
     class Program
     {
+        public static Icon AppIcon;
         [STAThread]
         static void Main(string[] args)
         {

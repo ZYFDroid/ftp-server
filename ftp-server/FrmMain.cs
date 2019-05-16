@@ -196,7 +196,7 @@ namespace ftp_server
 
         private void mnuAbout_Click(object sender, EventArgs e)
         {
-
+            new FrmAbout().ShowDialog(this);
         }
     }
 }
