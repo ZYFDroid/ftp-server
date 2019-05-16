@@ -14,28 +14,26 @@ namespace ftp_server
     {
         public event EventHandler<string> OnConsoleWriteLine;
 
-        public long unlogintimeout = 16000;
+        public long UnloginedTimeout = 16000;
 
-        public int userLimits = 30;
+        public int MaxUserCount = 30;
 
-        public int ipBlockTrigger = 20;
+        public int BanIpTrigger = 20;
 
-        public long ipBlockTime = 60000;
+        public long BanIpDuration = 60000;
 
         internal SortedList<string, long> blockedIpAddress=new SortedList<string, long>();
         internal SortedList<string, int> blockingcount=new SortedList<string, int>();
 
         private TcpListener _listener = null;
-        private int _port;
         private bool _disposed;
         private bool _listening;
         private Thread _checkThread;
         public List<ClientConnection> _activeConnections;
 
-        public FtpServer(int port)
-        {
-            _port = port;
-        }
+        public FtpServer(){}
+
+        public int Port = 21;
 
         public bool Disposed {
             get { return _disposed; }
@@ -44,7 +42,7 @@ namespace ftp_server
         public void Start()
         {
             ConsoleWriteLine("[Server] Server started");
-            _listener = new TcpListener(IPAddress.Any, _port);
+            _listener = new TcpListener(IPAddress.Any, Port);
 
             _listening = true;
             _listener.Start();
@@ -75,7 +73,7 @@ namespace ftp_server
                     {
                         TcpClient client = _listener.EndAcceptTcpClient(result);
 
-                        if (_activeConnections.Count >= userLimits)
+                        if (_activeConnections.Count >= MaxUserCount)
                         {
                             try
                             {
@@ -124,10 +122,10 @@ namespace ftp_server
             if (blockingcount.ContainsKey(ip))
             {
                 blockingcount[ip]++;
-                if (blockingcount[ip] > ipBlockTrigger)
+                if (blockingcount[ip] > BanIpTrigger)
                 {
                     blockingcount.Remove(ip);
-                    blockedIpAddress.Add(ip, SysClock.Mill + ipBlockTime);
+                    blockedIpAddress.Add(ip, SysClock.Mill + BanIpDuration);
                     ConsoleWriteLine("[IPBLOCKER] Blocked " + ip);
                 }
             }
@@ -190,6 +188,22 @@ namespace ftp_server
             }
 
             _disposed = true;
+        }
+
+        public void KickAll() {
+            for (int i = _activeConnections.Count - 1; i >= 0; i--)
+            {
+                ClientConnection cln = _activeConnections[i];
+                try
+                {
+                    cln.Dispose();
+                }
+                catch (Exception ex) {
+                    ConsoleWriteLine("[ERROR] "+ex.Message);
+                }
+            }
+
+
         }
     }
 }

@@ -31,8 +31,15 @@
             this.components = new System.ComponentModel.Container();
             this.logText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.userEditBox = new System.Windows.Forms.GroupBox();
+            this.btnDelUser = new System.Windows.Forms.Button();
+            this.btnSaveUser = new System.Windows.Forms.Button();
+            this.btnChooseRoot = new System.Windows.Forms.Button();
+            this.btnAnonymous = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.chkPermDelete = new System.Windows.Forms.CheckBox();
+            this.chkPermWrite = new System.Windows.Forms.CheckBox();
+            this.chkPermRead = new System.Windows.Forms.CheckBox();
             this.chkPermList = new System.Windows.Forms.CheckBox();
             this.txtPath = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -42,28 +49,23 @@
             this.label2 = new System.Windows.Forms.Label();
             this.listUser = new System.Windows.Forms.ListBox();
             this.infoUpdateTimer = new System.Windows.Forms.Timer(this.components);
-            this.chkPermRead = new System.Windows.Forms.CheckBox();
-            this.chkPermWrite = new System.Windows.Forms.CheckBox();
-            this.chkPermDelete = new System.Windows.Forms.CheckBox();
-            this.btnAnonymous = new System.Windows.Forms.Button();
-            this.btnChooseRoot = new System.Windows.Forms.Button();
-            this.btnSaveUser = new System.Windows.Forms.Button();
-            this.btnDelUser = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.lblUserCount = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.valMaxUser = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
             this.btnKickAll = new System.Windows.Forms.Button();
+            this.lblUserCount = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.关于AToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.导出配置信息EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.导入配置信息IToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.退出XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox1.SuspendLayout();
+            this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.valMaxUser = new System.Windows.Forms.NumericUpDown();
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.btnNewUser = new System.Windows.Forms.Button();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.userEditBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -96,30 +98,71 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "用户列表";
             // 
-            // groupBox1
+            // userEditBox
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox1.Controls.Add(this.btnDelUser);
-            this.groupBox1.Controls.Add(this.btnSaveUser);
-            this.groupBox1.Controls.Add(this.btnChooseRoot);
-            this.groupBox1.Controls.Add(this.btnAnonymous);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.chkPermDelete);
-            this.groupBox1.Controls.Add(this.chkPermWrite);
-            this.groupBox1.Controls.Add(this.chkPermRead);
-            this.groupBox1.Controls.Add(this.chkPermList);
-            this.groupBox1.Controls.Add(this.txtPath);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.txtPw);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.txtUn);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(12, 218);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(223, 212);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "编辑用户(已登入的用户不受影响)";
+            this.userEditBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.userEditBox.Controls.Add(this.btnDelUser);
+            this.userEditBox.Controls.Add(this.btnSaveUser);
+            this.userEditBox.Controls.Add(this.btnChooseRoot);
+            this.userEditBox.Controls.Add(this.btnAnonymous);
+            this.userEditBox.Controls.Add(this.label5);
+            this.userEditBox.Controls.Add(this.chkPermDelete);
+            this.userEditBox.Controls.Add(this.chkPermWrite);
+            this.userEditBox.Controls.Add(this.chkPermRead);
+            this.userEditBox.Controls.Add(this.chkPermList);
+            this.userEditBox.Controls.Add(this.txtPath);
+            this.userEditBox.Controls.Add(this.label4);
+            this.userEditBox.Controls.Add(this.txtPw);
+            this.userEditBox.Controls.Add(this.label3);
+            this.userEditBox.Controls.Add(this.txtUn);
+            this.userEditBox.Controls.Add(this.label2);
+            this.userEditBox.Enabled = false;
+            this.userEditBox.Location = new System.Drawing.Point(12, 218);
+            this.userEditBox.Name = "userEditBox";
+            this.userEditBox.Size = new System.Drawing.Size(223, 212);
+            this.userEditBox.TabIndex = 2;
+            this.userEditBox.TabStop = false;
+            this.userEditBox.Text = "编辑用户(已登入的用户不受影响)";
+            // 
+            // btnDelUser
+            // 
+            this.btnDelUser.Location = new System.Drawing.Point(138, 150);
+            this.btnDelUser.Name = "btnDelUser";
+            this.btnDelUser.Size = new System.Drawing.Size(75, 23);
+            this.btnDelUser.TabIndex = 5;
+            this.btnDelUser.Text = "删除";
+            this.btnDelUser.UseVisualStyleBackColor = true;
+            this.btnDelUser.Click += new System.EventHandler(this.btnDelUser_Click);
+            // 
+            // btnSaveUser
+            // 
+            this.btnSaveUser.Location = new System.Drawing.Point(138, 179);
+            this.btnSaveUser.Name = "btnSaveUser";
+            this.btnSaveUser.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveUser.TabIndex = 5;
+            this.btnSaveUser.Text = "保存";
+            this.btnSaveUser.UseVisualStyleBackColor = true;
+            this.btnSaveUser.Click += new System.EventHandler(this.btnSaveUser_Click);
+            // 
+            // btnChooseRoot
+            // 
+            this.btnChooseRoot.Location = new System.Drawing.Point(170, 71);
+            this.btnChooseRoot.Name = "btnChooseRoot";
+            this.btnChooseRoot.Size = new System.Drawing.Size(43, 22);
+            this.btnChooseRoot.TabIndex = 4;
+            this.btnChooseRoot.Text = "...";
+            this.btnChooseRoot.UseVisualStyleBackColor = true;
+            this.btnChooseRoot.Click += new System.EventHandler(this.btnChooseRoot_Click);
+            // 
+            // btnAnonymous
+            // 
+            this.btnAnonymous.Location = new System.Drawing.Point(170, 18);
+            this.btnAnonymous.Name = "btnAnonymous";
+            this.btnAnonymous.Size = new System.Drawing.Size(43, 21);
+            this.btnAnonymous.TabIndex = 4;
+            this.btnAnonymous.Text = "匿名";
+            this.btnAnonymous.UseVisualStyleBackColor = true;
+            this.btnAnonymous.Click += new System.EventHandler(this.btnAnonymous_Click);
             // 
             // label5
             // 
@@ -129,6 +172,36 @@
             this.label5.Size = new System.Drawing.Size(29, 12);
             this.label5.TabIndex = 3;
             this.label5.Text = "权限";
+            // 
+            // chkPermDelete
+            // 
+            this.chkPermDelete.AutoSize = true;
+            this.chkPermDelete.Location = new System.Drawing.Point(12, 186);
+            this.chkPermDelete.Name = "chkPermDelete";
+            this.chkPermDelete.Size = new System.Drawing.Size(72, 16);
+            this.chkPermDelete.TabIndex = 2;
+            this.chkPermDelete.Text = "删除文件";
+            this.chkPermDelete.UseVisualStyleBackColor = true;
+            // 
+            // chkPermWrite
+            // 
+            this.chkPermWrite.AutoSize = true;
+            this.chkPermWrite.Location = new System.Drawing.Point(12, 164);
+            this.chkPermWrite.Name = "chkPermWrite";
+            this.chkPermWrite.Size = new System.Drawing.Size(120, 16);
+            this.chkPermWrite.TabIndex = 2;
+            this.chkPermWrite.Text = "上传文件，重命名";
+            this.chkPermWrite.UseVisualStyleBackColor = true;
+            // 
+            // chkPermRead
+            // 
+            this.chkPermRead.AutoSize = true;
+            this.chkPermRead.Location = new System.Drawing.Point(12, 142);
+            this.chkPermRead.Name = "chkPermRead";
+            this.chkPermRead.Size = new System.Drawing.Size(72, 16);
+            this.chkPermRead.TabIndex = 2;
+            this.chkPermRead.Text = "下载文件";
+            this.chkPermRead.UseVisualStyleBackColor = true;
             // 
             // chkPermList
             // 
@@ -198,78 +271,13 @@
             this.listUser.Name = "listUser";
             this.listUser.Size = new System.Drawing.Size(221, 112);
             this.listUser.TabIndex = 1;
+            this.listUser.SelectedIndexChanged += new System.EventHandler(this.listUser_SelectedIndexChanged);
             // 
             // infoUpdateTimer
             // 
             this.infoUpdateTimer.Enabled = true;
             this.infoUpdateTimer.Interval = 1000;
             this.infoUpdateTimer.Tick += new System.EventHandler(this.infoUpdateTimer_Tick);
-            // 
-            // chkPermRead
-            // 
-            this.chkPermRead.AutoSize = true;
-            this.chkPermRead.Location = new System.Drawing.Point(12, 142);
-            this.chkPermRead.Name = "chkPermRead";
-            this.chkPermRead.Size = new System.Drawing.Size(72, 16);
-            this.chkPermRead.TabIndex = 2;
-            this.chkPermRead.Text = "下载文件";
-            this.chkPermRead.UseVisualStyleBackColor = true;
-            // 
-            // chkPermWrite
-            // 
-            this.chkPermWrite.AutoSize = true;
-            this.chkPermWrite.Location = new System.Drawing.Point(12, 164);
-            this.chkPermWrite.Name = "chkPermWrite";
-            this.chkPermWrite.Size = new System.Drawing.Size(120, 16);
-            this.chkPermWrite.TabIndex = 2;
-            this.chkPermWrite.Text = "上传文件，重命名";
-            this.chkPermWrite.UseVisualStyleBackColor = true;
-            // 
-            // chkPermDelete
-            // 
-            this.chkPermDelete.AutoSize = true;
-            this.chkPermDelete.Location = new System.Drawing.Point(12, 186);
-            this.chkPermDelete.Name = "chkPermDelete";
-            this.chkPermDelete.Size = new System.Drawing.Size(72, 16);
-            this.chkPermDelete.TabIndex = 2;
-            this.chkPermDelete.Text = "删除文件";
-            this.chkPermDelete.UseVisualStyleBackColor = true;
-            // 
-            // btnAnonymous
-            // 
-            this.btnAnonymous.Location = new System.Drawing.Point(170, 18);
-            this.btnAnonymous.Name = "btnAnonymous";
-            this.btnAnonymous.Size = new System.Drawing.Size(43, 21);
-            this.btnAnonymous.TabIndex = 4;
-            this.btnAnonymous.Text = "匿名";
-            this.btnAnonymous.UseVisualStyleBackColor = true;
-            // 
-            // btnChooseRoot
-            // 
-            this.btnChooseRoot.Location = new System.Drawing.Point(170, 71);
-            this.btnChooseRoot.Name = "btnChooseRoot";
-            this.btnChooseRoot.Size = new System.Drawing.Size(43, 21);
-            this.btnChooseRoot.TabIndex = 4;
-            this.btnChooseRoot.Text = "...";
-            this.btnChooseRoot.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveUser
-            // 
-            this.btnSaveUser.Location = new System.Drawing.Point(138, 179);
-            this.btnSaveUser.Name = "btnSaveUser";
-            this.btnSaveUser.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveUser.TabIndex = 5;
-            this.btnSaveUser.Text = "保存";
-            this.btnSaveUser.UseVisualStyleBackColor = true;
-            // 
-            // btnDelUser
-            // 
-            this.btnDelUser.Location = new System.Drawing.Point(138, 149);
-            this.btnDelUser.Name = "btnDelUser";
-            this.btnDelUser.Size = new System.Drawing.Size(75, 23);
-            this.btnDelUser.TabIndex = 5;
-            this.btnDelUser.Text = "删除";
-            this.btnDelUser.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -286,6 +294,26 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "信息流";
             // 
+            // btnKickAll
+            // 
+            this.btnKickAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnKickAll.Location = new System.Drawing.Point(264, 14);
+            this.btnKickAll.Name = "btnKickAll";
+            this.btnKickAll.Size = new System.Drawing.Size(101, 23);
+            this.btnKickAll.TabIndex = 2;
+            this.btnKickAll.Text = "断开所有用户";
+            this.btnKickAll.UseVisualStyleBackColor = true;
+            this.btnKickAll.Click += new System.EventHandler(this.btnKickAll_Click);
+            // 
+            // lblUserCount
+            // 
+            this.lblUserCount.AutoSize = true;
+            this.lblUserCount.Location = new System.Drawing.Point(7, 19);
+            this.lblUserCount.Name = "lblUserCount";
+            this.lblUserCount.Size = new System.Drawing.Size(53, 12);
+            this.lblUserCount.TabIndex = 6;
+            this.lblUserCount.Text = "在线人数";
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -298,14 +326,49 @@
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // lblUserCount
+            // 文件ToolStripMenuItem
             // 
-            this.lblUserCount.AutoSize = true;
-            this.lblUserCount.Location = new System.Drawing.Point(7, 19);
-            this.lblUserCount.Name = "lblUserCount";
-            this.lblUserCount.Size = new System.Drawing.Size(53, 12);
-            this.lblUserCount.TabIndex = 6;
-            this.lblUserCount.Text = "在线人数";
+            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuSave,
+            this.toolStripSeparator2,
+            this.mnuExit});
+            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
+            this.文件ToolStripMenuItem.Text = "文件(&F)";
+            // 
+            // mnuSave
+            // 
+            this.mnuSave.Name = "mnuSave";
+            this.mnuSave.Size = new System.Drawing.Size(163, 22);
+            this.mnuSave.Text = "保存配置(&S)";
+            this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            // 
+            // mnuExit
+            // 
+            this.mnuExit.Name = "mnuExit";
+            this.mnuExit.Size = new System.Drawing.Size(152, 22);
+            this.mnuExit.Text = "退出(&X)";
+            this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
+            // 
+            // 关于AToolStripMenuItem
+            // 
+            this.关于AToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuAbout});
+            this.关于AToolStripMenuItem.Name = "关于AToolStripMenuItem";
+            this.关于AToolStripMenuItem.Size = new System.Drawing.Size(61, 21);
+            this.关于AToolStripMenuItem.Text = "帮助(&H)";
+            // 
+            // mnuAbout
+            // 
+            this.mnuAbout.Name = "mnuAbout";
+            this.mnuAbout.Size = new System.Drawing.Size(152, 22);
+            this.mnuAbout.Text = "关于(&A)";
+            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // groupBox3
             // 
@@ -318,18 +381,6 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "服务器管理";
             // 
-            // valMaxUser
-            // 
-            this.valMaxUser.Location = new System.Drawing.Point(71, 20);
-            this.valMaxUser.Name = "valMaxUser";
-            this.valMaxUser.Size = new System.Drawing.Size(142, 21);
-            this.valMaxUser.TabIndex = 0;
-            this.valMaxUser.Value = new decimal(new int[] {
-            40,
-            0,
-            0,
-            0});
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -339,75 +390,57 @@
             this.label6.TabIndex = 1;
             this.label6.Text = "最大人数";
             // 
-            // btnKickAll
+            // valMaxUser
             // 
-            this.btnKickAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnKickAll.Location = new System.Drawing.Point(264, 14);
-            this.btnKickAll.Name = "btnKickAll";
-            this.btnKickAll.Size = new System.Drawing.Size(101, 23);
-            this.btnKickAll.TabIndex = 2;
-            this.btnKickAll.Text = "断开所有用户";
-            this.btnKickAll.UseVisualStyleBackColor = true;
+            this.valMaxUser.Location = new System.Drawing.Point(71, 20);
+            this.valMaxUser.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.valMaxUser.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.valMaxUser.Name = "valMaxUser";
+            this.valMaxUser.Size = new System.Drawing.Size(142, 21);
+            this.valMaxUser.TabIndex = 0;
+            this.valMaxUser.Value = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
+            this.valMaxUser.ValueChanged += new System.EventHandler(this.valMaxUser_ValueChanged);
             // 
-            // 文件ToolStripMenuItem
+            // notifyIcon
             // 
-            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.导出配置信息EToolStripMenuItem,
-            this.导入配置信息IToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.退出XToolStripMenuItem});
-            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
-            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
-            this.文件ToolStripMenuItem.Text = "文件(&F)";
+            this.notifyIcon.Text = "notifyIcon1";
+            this.notifyIcon.Visible = true;
             // 
-            // 关于AToolStripMenuItem
+            // btnNewUser
             // 
-            this.关于AToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.关于AToolStripMenuItem1});
-            this.关于AToolStripMenuItem.Name = "关于AToolStripMenuItem";
-            this.关于AToolStripMenuItem.Size = new System.Drawing.Size(61, 21);
-            this.关于AToolStripMenuItem.Text = "帮助(&H)";
-            // 
-            // 关于AToolStripMenuItem1
-            // 
-            this.关于AToolStripMenuItem1.Name = "关于AToolStripMenuItem1";
-            this.关于AToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.关于AToolStripMenuItem1.Text = "关于(&A)";
-            // 
-            // 导出配置信息EToolStripMenuItem
-            // 
-            this.导出配置信息EToolStripMenuItem.Name = "导出配置信息EToolStripMenuItem";
-            this.导出配置信息EToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.导出配置信息EToolStripMenuItem.Text = "导出配置信息(&E)";
-            // 
-            // 导入配置信息IToolStripMenuItem
-            // 
-            this.导入配置信息IToolStripMenuItem.Name = "导入配置信息IToolStripMenuItem";
-            this.导入配置信息IToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.导入配置信息IToolStripMenuItem.Text = "导入配置信息(&I)";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
-            // 
-            // 退出XToolStripMenuItem
-            // 
-            this.退出XToolStripMenuItem.Name = "退出XToolStripMenuItem";
-            this.退出XToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.退出XToolStripMenuItem.Text = "退出(&X)";
+            this.btnNewUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnNewUser.Location = new System.Drawing.Point(150, 339);
+            this.btnNewUser.Name = "btnNewUser";
+            this.btnNewUser.Size = new System.Drawing.Size(75, 23);
+            this.btnNewUser.TabIndex = 6;
+            this.btnNewUser.Text = "新建";
+            this.btnNewUser.UseVisualStyleBackColor = true;
+            this.btnNewUser.Click += new System.EventHandler(this.btnNewUser_Click);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 442);
+            this.Controls.Add(this.btnNewUser);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.listUser);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.userEditBox);
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(640, 480);
@@ -416,8 +449,8 @@
             this.Text = "FTP服务器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.userEditBox.ResumeLayout(false);
+            this.userEditBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -433,7 +466,7 @@
         #endregion
         private System.Windows.Forms.Timer infoUpdateTimer;
         private System.Windows.Forms.ListBox listUser;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox userEditBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox logText;
         private System.Windows.Forms.Label label5;
@@ -459,11 +492,13 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown valMaxUser;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 导出配置信息EToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 导入配置信息IToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem 退出XToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuExit;
         private System.Windows.Forms.ToolStripMenuItem 关于AToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 关于AToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem mnuAbout;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
+        private System.Windows.Forms.ToolStripMenuItem mnuSave;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.Button btnNewUser;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
     }
 }

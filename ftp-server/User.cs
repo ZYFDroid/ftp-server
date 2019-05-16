@@ -9,6 +9,8 @@ namespace ftp_server
 {
     class User
     {
+        public const string ANONYMOUS= "anonymous";
+
         private string _username="{NONE}";
         private string _password="";
         private string _root="";
@@ -135,6 +137,17 @@ namespace ftp_server
             }
         }
 
+        public string Permissions {
+            get {
+                string str = "";
+                if (CanList) { str = str + "l"; }
+                if (CanRead) { str = str + "r"; }
+                if (CanWrite) { str = str + "w"; }
+                if (CanDelete) { str = str + "d"; }
+                return str;
+            }
+        }
+
         public User()
         {
             _loggedIn = false;
@@ -156,11 +169,17 @@ namespace ftp_server
             CanWrite = permission.Contains("w");
             CanList = permission.Contains("l");
             CanDelete = permission.Contains("d");
-            if (creatroot) {
-                if (!Directory.Exists(root)) {
-                    Directory.CreateDirectory(root);
+            try
+            {
+                if (creatroot)
+                {
+                    if (!Directory.Exists(root))
+                    {
+                        Directory.CreateDirectory(root);
+                    }
                 }
             }
+            catch { }
         }
     }
 }

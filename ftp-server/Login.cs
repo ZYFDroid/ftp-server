@@ -7,15 +7,15 @@ namespace ftp_server
     {
         static int failcount = 0;
 
-        static int trigger = 10;
+        public static int FakeUserTrigger = 10;
 
-        private static SortedList<string, User> userList = new SortedList<string, User>();
+        public static SortedList<string, User> userList = new SortedList<string, User>();
         public static bool IsValidLogin(User user)
         {
             if (!userList.ContainsKey(user.Username)) {
                 failcount++;
                 failcount++;
-                if (failcount >= trigger)//Triggle fake account
+                if (failcount >= FakeUserTrigger)//Triggle fake account
                 {
                     failcount = 0;
                     user.Username = "蔡徐坤";
@@ -54,7 +54,7 @@ namespace ftp_server
                 else
                 {
                     failcount++;
-                    if (failcount >= trigger)//Triggle fake account
+                    if (failcount >= FakeUserTrigger)//Triggle fake account
                     {
                         failcount = 0;
                         user.Username = "蔡徐坤";

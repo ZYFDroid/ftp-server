@@ -196,7 +196,7 @@ namespace ftp_server
             {
                 while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
                 {
-                    ConsoleWriteLine(String.Format("[FROM {0}@{1}] {2}",_user.Username,_user.RemoteAddress,line));
+                    ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}",_user.Username,_user.RemoteAddress,line));
                     string response = null;
 
                     string[] command = line.Split(' ');
@@ -225,7 +225,7 @@ namespace ftp_server
                     {
                         try
                         {
-                            ConsoleWriteLine(String.Format("[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
+                            ConsoleWriteLine(String.Format("----[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
                             _writer.WriteLine(response);
                             _writer.Flush();
                         }
@@ -968,7 +968,7 @@ namespace ftp_server
         }
 
         public bool checkTimeout() {
-            if ((!_user.LoggedIn || _user.IsFake) && SysClock.Mill - createTime > _parent.unlogintimeout) {
+            if ((!_user.LoggedIn || _user.IsFake) && SysClock.Mill - createTime > _parent.UnloginedTimeout) {
                 ConsoleWriteLine("[WARNING] Kicked a user that not logged in before timeout or is fake");
                 this.Dispose();
                 return true;
