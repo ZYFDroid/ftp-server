@@ -59,5 +59,45 @@ namespace ftp_server.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon icon_ftp {
+            get {
+                object obj = ResourceManager.GetObject("icon_ftp", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon icon_ftp_active1 {
+            get {
+                object obj = ResourceManager.GetObject("icon_ftp_active1", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon icon_ftp_active2 {
+            get {
+                object obj = ResourceManager.GetObject("icon_ftp_active2", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似于 (Icon) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon icon_ftp_idle {
+            get {
+                object obj = ResourceManager.GetObject("icon_ftp_idle", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

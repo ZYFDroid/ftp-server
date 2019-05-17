@@ -117,4 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAEAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAQAMAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAABV/wBV/wBV/wBV/wBV/wBV/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABV
+        /wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wAAAAAAAAAAAAAAAAAAAABV/wBV/wBV/wBV/wBV/wBV
+        /wBV/wBV/wBV/wBV/wBV/wBV/wAAAAAAAAAAAABV/wBV/wAODg5V/wAODg5V/wAODg5V/wAODg5V/wAO
+        Dg5V/wAODg5V/wAAAAAAAABV/wAODg5V/wAODg5V/wAODg5V/wAODg5V/wAODg5V/wAODg5V/wBV/wAA
+        AABV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV
+        /wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wAODg5V/wBV/wBV/wBV/wAO
+        Dg5V/wBV/wAODg5V/wBV/wBV/wBV/wBV/wBV/wBV/wAODg5V/wBV/wBV/wBV/wAODg5V/wBV/wAODg5V
+        /wBV/wBV/wBV/wBV/wBV/wBV/wAODg4ODg4ODg5V/wBV/wAODg5V/wBV/wAODg4ODg4ODg5V/wBV/wBV
+        /wBV/wBV/wAODg5V/wBV/wBV/wBV/wAODg5V/wBV/wAODg5V/wAODg5V/wBV/wBV/wAAAABV/wAODg4O
+        Dg4ODg5V/wAODg4ODg4ODg5V/wAODg4ODg4ODg5V/wBV/wAAAAAAAABV/wBV/wBV/wBV/wBV/wBV/wBV
+        /wBV/wBV/wBV/wBV/wBV/wBV/wBV/wAAAAAAAAAAAABV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV
+        /wBV/wBV/wAAAAAAAAAAAAAAAAAAAABV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wBV/wAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAABV/wBV/wBV/wBV/wBV/wBV/wAAAAAAAAAAAAAAAAAAAAD4H///4Af//8AD
+        //+AAf//gAH//wAA//8AAP//AAD//wAA//8AAP//AAD//4AB//+AAf//wAP//+AH///4H///
+</value>
+  </data>
 </root>

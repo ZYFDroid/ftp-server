@@ -48,8 +48,12 @@ namespace ftp_server
         List<string> logs = new List<string>();
 
         private void onLog(string log) {
+            log = string.Format("[{0:yyyy\\-MM\\-dd\\ HH\\:mm\\:ss\\.fff}] {1}", DateTime.Now, log);
             logs.Add(log);
-            while (logs.Count > maxlog) { logs.RemoveAt(0); }
+            if (logs.Count > maxlog / 2 * 3)
+            {
+                while (logs.Count > maxlog) { logs.RemoveAt(0); }
+            }
             logText.AppendText(log + "\r\n");
             if (logText.Lines.Length > 2 * maxlog) { logText.Lines = logs.ToArray(); logText.AppendText("\r\n"); }
         }
@@ -63,10 +67,31 @@ namespace ftp_server
             }
             e.Cancel = true;
         }
-
+        bool icon = false;
         private void infoUpdateTimer_Tick(object sender, EventArgs e)
         {
-            lblUserCount.Text = "在线人数：" + ftpserver.UserCount;
+            int userCount= ftpserver.UserCount;
+            lblUserCount.Text = "在线人数：" + userCount;
+            if (userCount > 0)
+            {
+                icon = !icon;
+                notifyIcon.Icon = icon ? Program.FTP_ACTIVE1 : Program.FTP_ACTIVE2;
+            }
+            else {
+                notifyIcon.Icon = Program.FTP_IDLE;
+            }
+            if (hideCd >= 0) {
+                hideCd--; if (hideCd <= 0) {
+                    this.ShowInTaskbar=!(this.WindowState == FormWindowState.Minimized) ;
+                }
+            }
+            if (showCd >= 0)
+            {
+                showCd--; if (showCd <= 0)
+                {
+                    this.WindowState = FormWindowState.Normal ;
+                }
+            }
         }
 
         private void valMaxUser_ValueChanged(object sender, EventArgs e)
@@ -197,6 +222,43 @@ namespace ftp_server
         private void mnuAbout_Click(object sender, EventArgs e)
         {
             new FrmAbout().ShowDialog(this);
+        }
+
+        private void btnCancelSave_Click(object sender, EventArgs e)
+        {
+            loadUserList();
+        }
+
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+
+        }
+        int showCd = -1;
+        private void notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            showCd = 1;
+            ShowInTaskbar = true;
+        }
+        int hideCd = -1;
+        private void FrmMain_SizeChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                hideCd = 1;
+            }
+            else {
+                ShowInTaskbar = true;
+            }
+        }
+
+        private void trayMnuExit_Click(object sender, EventArgs e)
+        {
+            this.FrmMain_FormClosing(sender, new FormClosingEventArgs(CloseReason.ApplicationExitCall, false));
+        }
+
+        private void trayMnuMain_Click(object sender, EventArgs e)
+        {
+            notifyIcon_DoubleClick(sender, e);
         }
     }
 }

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.logText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.userEditBox = new System.Windows.Forms.GroupBox();
@@ -65,11 +66,19 @@
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.btnNewUser = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnCancelSave = new System.Windows.Forms.Button();
+            this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.trayMnuMain = new System.Windows.Forms.ToolStripMenuItem();
+            this.trayMnuExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.userEditBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valMaxUser)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.trayMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // logText
@@ -101,6 +110,7 @@
             // userEditBox
             // 
             this.userEditBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.userEditBox.Controls.Add(this.btnCancelSave);
             this.userEditBox.Controls.Add(this.btnDelUser);
             this.userEditBox.Controls.Add(this.btnSaveUser);
             this.userEditBox.Controls.Add(this.btnChooseRoot);
@@ -126,9 +136,9 @@
             // 
             // btnDelUser
             // 
-            this.btnDelUser.Location = new System.Drawing.Point(138, 150);
+            this.btnDelUser.Location = new System.Drawing.Point(104, 148);
             this.btnDelUser.Name = "btnDelUser";
-            this.btnDelUser.Size = new System.Drawing.Size(75, 23);
+            this.btnDelUser.Size = new System.Drawing.Size(42, 23);
             this.btnDelUser.TabIndex = 5;
             this.btnDelUser.Text = "删除";
             this.btnDelUser.UseVisualStyleBackColor = true;
@@ -136,9 +146,9 @@
             // 
             // btnSaveUser
             // 
-            this.btnSaveUser.Location = new System.Drawing.Point(138, 179);
+            this.btnSaveUser.Location = new System.Drawing.Point(150, 176);
             this.btnSaveUser.Name = "btnSaveUser";
-            this.btnSaveUser.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveUser.Size = new System.Drawing.Size(42, 23);
             this.btnSaveUser.TabIndex = 5;
             this.btnSaveUser.Text = "保存";
             this.btnSaveUser.UseVisualStyleBackColor = true;
@@ -146,7 +156,7 @@
             // 
             // btnChooseRoot
             // 
-            this.btnChooseRoot.Location = new System.Drawing.Point(170, 71);
+            this.btnChooseRoot.Location = new System.Drawing.Point(150, 93);
             this.btnChooseRoot.Name = "btnChooseRoot";
             this.btnChooseRoot.Size = new System.Drawing.Size(43, 22);
             this.btnChooseRoot.TabIndex = 4;
@@ -176,7 +186,7 @@
             // chkPermDelete
             // 
             this.chkPermDelete.AutoSize = true;
-            this.chkPermDelete.Location = new System.Drawing.Point(12, 186);
+            this.chkPermDelete.Location = new System.Drawing.Point(12, 182);
             this.chkPermDelete.Name = "chkPermDelete";
             this.chkPermDelete.Size = new System.Drawing.Size(72, 16);
             this.chkPermDelete.TabIndex = 2;
@@ -186,7 +196,7 @@
             // chkPermWrite
             // 
             this.chkPermWrite.AutoSize = true;
-            this.chkPermWrite.Location = new System.Drawing.Point(12, 164);
+            this.chkPermWrite.Location = new System.Drawing.Point(12, 117);
             this.chkPermWrite.Name = "chkPermWrite";
             this.chkPermWrite.Size = new System.Drawing.Size(120, 16);
             this.chkPermWrite.TabIndex = 2;
@@ -196,7 +206,7 @@
             // chkPermRead
             // 
             this.chkPermRead.AutoSize = true;
-            this.chkPermRead.Location = new System.Drawing.Point(12, 142);
+            this.chkPermRead.Location = new System.Drawing.Point(12, 161);
             this.chkPermRead.Name = "chkPermRead";
             this.chkPermRead.Size = new System.Drawing.Size(72, 16);
             this.chkPermRead.TabIndex = 2;
@@ -206,7 +216,7 @@
             // chkPermList
             // 
             this.chkPermList.AutoSize = true;
-            this.chkPermList.Location = new System.Drawing.Point(12, 120);
+            this.chkPermList.Location = new System.Drawing.Point(12, 139);
             this.chkPermList.Name = "chkPermList";
             this.chkPermList.Size = new System.Drawing.Size(96, 16);
             this.chkPermList.TabIndex = 2;
@@ -217,7 +227,7 @@
             // 
             this.txtPath.Location = new System.Drawing.Point(57, 72);
             this.txtPath.Name = "txtPath";
-            this.txtPath.Size = new System.Drawing.Size(115, 21);
+            this.txtPath.Size = new System.Drawing.Size(135, 21);
             this.txtPath.TabIndex = 1;
             // 
             // label4
@@ -233,7 +243,7 @@
             // 
             this.txtPw.Location = new System.Drawing.Point(57, 45);
             this.txtPw.Name = "txtPw";
-            this.txtPw.Size = new System.Drawing.Size(156, 21);
+            this.txtPw.Size = new System.Drawing.Size(135, 21);
             this.txtPw.TabIndex = 1;
             // 
             // label3
@@ -265,18 +275,19 @@
             // 
             this.listUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.listUser.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listUser.FormattingEnabled = true;
             this.listUser.ItemHeight = 12;
-            this.listUser.Location = new System.Drawing.Point(14, 101);
+            this.listUser.Location = new System.Drawing.Point(2, 2);
             this.listUser.Name = "listUser";
-            this.listUser.Size = new System.Drawing.Size(221, 112);
+            this.listUser.Size = new System.Drawing.Size(217, 108);
             this.listUser.TabIndex = 1;
             this.listUser.SelectedIndexChanged += new System.EventHandler(this.listUser_SelectedIndexChanged);
             // 
             // infoUpdateTimer
             // 
             this.infoUpdateTimer.Enabled = true;
-            this.infoUpdateTimer.Interval = 1000;
+            this.infoUpdateTimer.Interval = 500;
             this.infoUpdateTimer.Tick += new System.EventHandler(this.infoUpdateTimer_Tick);
             // 
             // groupBox2
@@ -339,14 +350,14 @@
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(163, 22);
+            this.mnuSave.Size = new System.Drawing.Size(152, 22);
             this.mnuSave.Text = "保存配置(&S)";
             this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // mnuExit
             // 
@@ -415,33 +426,90 @@
             // 
             // notifyIcon
             // 
-            this.notifyIcon.Text = "notifyIcon1";
+            this.notifyIcon.ContextMenuStrip = this.trayMenu;
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "FTP服务器";
             this.notifyIcon.Visible = true;
+            this.notifyIcon.DoubleClick += new System.EventHandler(this.notifyIcon_DoubleClick);
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseDoubleClick);
             // 
             // btnNewUser
             // 
             this.btnNewUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnNewUser.Location = new System.Drawing.Point(150, 339);
+            this.btnNewUser.Location = new System.Drawing.Point(162, 366);
             this.btnNewUser.Name = "btnNewUser";
-            this.btnNewUser.Size = new System.Drawing.Size(75, 23);
+            this.btnNewUser.Size = new System.Drawing.Size(42, 23);
             this.btnNewUser.TabIndex = 6;
             this.btnNewUser.Text = "新建";
             this.btnNewUser.UseVisualStyleBackColor = true;
             this.btnNewUser.Click += new System.EventHandler(this.btnNewUser_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.listUser);
+            this.panel1.Location = new System.Drawing.Point(12, 98);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(223, 114);
+            this.panel1.TabIndex = 7;
+            // 
+            // btnCancelSave
+            // 
+            this.btnCancelSave.Location = new System.Drawing.Point(104, 176);
+            this.btnCancelSave.Name = "btnCancelSave";
+            this.btnCancelSave.Size = new System.Drawing.Size(42, 23);
+            this.btnCancelSave.TabIndex = 6;
+            this.btnCancelSave.Text = "取消";
+            this.btnCancelSave.UseVisualStyleBackColor = true;
+            this.btnCancelSave.Click += new System.EventHandler(this.btnCancelSave_Click);
+            // 
+            // trayMenu
+            // 
+            this.trayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.trayMnuMain,
+            this.toolStripSeparator1,
+            this.trayMnuExit});
+            this.trayMenu.Name = "trayMenu";
+            this.trayMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.trayMenu.ShowImageMargin = false;
+            this.trayMenu.Size = new System.Drawing.Size(128, 76);
+            // 
+            // trayMnuMain
+            // 
+            this.trayMnuMain.Name = "trayMnuMain";
+            this.trayMnuMain.Size = new System.Drawing.Size(127, 22);
+            this.trayMnuMain.Text = "打开主界面";
+            this.trayMnuMain.Click += new System.EventHandler(this.trayMnuMain_Click);
+            // 
+            // trayMnuExit
+            // 
+            this.trayMnuExit.Name = "trayMnuExit";
+            this.trayMnuExit.Size = new System.Drawing.Size(127, 22);
+            this.trayMnuExit.Text = "退出";
+            this.trayMnuExit.Click += new System.EventHandler(this.trayMnuExit_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(124, 6);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 442);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnNewUser);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.listUser);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.userEditBox);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(640, 480);
             this.Name = "FrmMain";
@@ -449,6 +517,7 @@
             this.Text = "FTP服务器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
+            this.SizeChanged += new System.EventHandler(this.FrmMain_SizeChanged);
             this.userEditBox.ResumeLayout(false);
             this.userEditBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -458,6 +527,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valMaxUser)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.trayMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -500,5 +571,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.Button btnNewUser;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnCancelSave;
+        private System.Windows.Forms.ContextMenuStrip trayMenu;
+        private System.Windows.Forms.ToolStripMenuItem trayMnuMain;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem trayMnuExit;
     }
 }
