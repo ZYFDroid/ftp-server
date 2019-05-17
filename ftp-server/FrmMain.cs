@@ -25,7 +25,18 @@ namespace ftp_server
             logmethod = new LogText(onLog);
             ftpserver.OnConsoleWriteLine += Ftpserver_OnConsoleWriteLine;
             onLog("Load Configurations:\r\n"+Configuration.InterpreteConfigurations(Configuration.GetConfigurations()));
-            ftpserver.Start();
+            System.Net.Sockets.SocketError code;
+            if (!ftpserver.Start(out code)) {
+                switch (code){
+                    case System.Net.Sockets.SocketError.AddressAlreadyInUse:
+                        MessageBox.Show("当前的FTP端口已被占用，请检查是否有已开启的FTP服务器，或者更换端口号后重启服务器。", "开启服务器错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+
+                    default:
+                        MessageBox.Show("无法开启服务器，请检查日志", "开启服务器错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                }
+            }
             valMaxUser.Value = ftpserver.MaxUserCount;
             btnNewUser.Enabled = true;
             loadUserList();
@@ -44,7 +55,7 @@ namespace ftp_server
             }
         }
 
-        int maxlog = 480;
+        public static int maxlog = 480;
         List<string> logs = new List<string>();
 
         private void onLog(string log) {
@@ -60,6 +71,12 @@ namespace ftp_server
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (e.CloseReason == CloseReason.WindowsShutDown || e.CloseReason==CloseReason.TaskManagerClosing) {
+                Configuration.PutConfigurations();
+                ftpserver.Dispose();
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                return;
+            }
             if (MessageBox.Show("是否退出服务器?\r\n您的配置将会保存", "是否退出", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==DialogResult.Yes) {
                 Configuration.PutConfigurations();
                 ftpserver.Dispose();

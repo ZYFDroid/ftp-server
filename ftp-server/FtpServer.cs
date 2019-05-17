@@ -39,18 +39,26 @@ namespace ftp_server
             get { return _disposed; }
         }
 
-        public void Start()
+        public bool Start(out SocketError code)
         {
-            ConsoleWriteLine("[Server] Server started");
-            _listener = new TcpListener(IPAddress.Any, Port);
-
-            _listening = true;
-            _listener.Start();
-
-            _activeConnections = new List<ClientConnection>();
-            _checkThread = new Thread(checkUnloginedSession);
-            _checkThread.Start();
-            _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
+            try
+            {
+                _activeConnections = new List<ClientConnection>();
+                _listener = new TcpListener(IPAddress.Any, Port);
+                _listening = true;
+                _listener.Start();
+                _checkThread = new Thread(checkUnloginedSession);
+                _checkThread.Start();
+                _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
+                ConsoleWriteLine("[Server] Server started");
+                code = SocketError.Success;
+                return true;
+            }
+            catch (SocketException ex) {
+                ConsoleWriteLine("[Error] "+ex.Message);
+                code = ex.SocketErrorCode;
+                return false;
+            }
         }
 
         public void Stop()
