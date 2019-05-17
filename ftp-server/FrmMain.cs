@@ -74,12 +74,14 @@ namespace ftp_server
             if (e.CloseReason == CloseReason.WindowsShutDown || e.CloseReason==CloseReason.TaskManagerClosing) {
                 Configuration.PutConfigurations();
                 ftpserver.Dispose();
+                Program.ClearExceptionState();
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
                 return;
             }
             if (MessageBox.Show("是否退出服务器?\r\n您的配置将会保存", "是否退出", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==DialogResult.Yes) {
                 Configuration.PutConfigurations();
                 ftpserver.Dispose();
+                Program.ClearExceptionState();
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
             e.Cancel = true;
@@ -276,6 +278,11 @@ namespace ftp_server
         private void trayMnuMain_Click(object sender, EventArgs e)
         {
             notifyIcon_DoubleClick(sender, e);
+        }
+
+        private void testexceptionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new InvalidOperationException();
         }
     }
 }

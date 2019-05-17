@@ -72,6 +72,7 @@
             this.btnNewUser = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.testexceptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userEditBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -342,7 +343,6 @@
             this.关于AToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.menuStrip1.Size = new System.Drawing.Size(624, 25);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
@@ -360,26 +360,27 @@
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(139, 22);
+            this.mnuSave.Size = new System.Drawing.Size(152, 22);
             this.mnuSave.Text = "保存配置(&S)";
             this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(136, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(139, 22);
+            this.mnuExit.Size = new System.Drawing.Size(152, 22);
             this.mnuExit.Text = "退出(&X)";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
             // 关于AToolStripMenuItem
             // 
             this.关于AToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuAbout});
+            this.mnuAbout,
+            this.testexceptionToolStripMenuItem});
             this.关于AToolStripMenuItem.Name = "关于AToolStripMenuItem";
             this.关于AToolStripMenuItem.Size = new System.Drawing.Size(61, 21);
             this.关于AToolStripMenuItem.Text = "帮助(&H)";
@@ -450,26 +451,25 @@
             this.toolStripSeparator1,
             this.trayMnuExit});
             this.trayMenu.Name = "trayMenu";
-            this.trayMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.trayMenu.ShowImageMargin = false;
             this.trayMenu.Size = new System.Drawing.Size(112, 54);
             // 
             // trayMnuMain
             // 
             this.trayMnuMain.Name = "trayMnuMain";
-            this.trayMnuMain.Size = new System.Drawing.Size(111, 22);
+            this.trayMnuMain.Size = new System.Drawing.Size(127, 22);
             this.trayMnuMain.Text = "打开主界面";
             this.trayMnuMain.Click += new System.EventHandler(this.trayMnuMain_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(108, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(124, 6);
             // 
             // trayMnuExit
             // 
             this.trayMnuExit.Name = "trayMnuExit";
-            this.trayMnuExit.Size = new System.Drawing.Size(111, 22);
+            this.trayMnuExit.Size = new System.Drawing.Size(127, 22);
             this.trayMnuExit.Text = "退出";
             this.trayMnuExit.Click += new System.EventHandler(this.trayMnuExit_Click);
             // 
@@ -495,6 +495,13 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(204, 114);
             this.panel1.TabIndex = 7;
+            // 
+            // testexceptionToolStripMenuItem
+            // 
+            this.testexceptionToolStripMenuItem.Name = "testexceptionToolStripMenuItem";
+            this.testexceptionToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.testexceptionToolStripMenuItem.Text = "testexception";
+            this.testexceptionToolStripMenuItem.Click += new System.EventHandler(this.testexceptionToolStripMenuItem_Click);
             // 
             // FrmMain
             // 
@@ -577,5 +584,6 @@
         private System.Windows.Forms.ToolStripMenuItem trayMnuMain;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem trayMnuExit;
+        private System.Windows.Forms.ToolStripMenuItem testexceptionToolStripMenuItem;
     }
 }
