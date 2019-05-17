@@ -59,7 +59,7 @@ namespace ftp_server
         List<string> logs = new List<string>();
 
         private void onLog(string log) {
-            log = string.Format("[{0:yyyy\\-MM\\-dd\\ HH\\:mm\\:ss\\.fff}] {1}", DateTime.Now, log);
+            log = string.Format("[{0:yy\\-MM\\-dd\\ HH\\:mm\\:ss}] {1}", DateTime.Now, log);
             logs.Add(log);
             if (logs.Count > maxlog / 2 * 3)
             {
