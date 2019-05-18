@@ -18,8 +18,20 @@ namespace ftp_server
 
         public const string CMD_CONF = "CONF";
 
-        public const string CONF_MAX_USER = "MAX_USER";
-        public const string CONF_PORT = "PORT";
+        public const string CONF_SERVER_MAX_USER = "SERVER_MAX_USER";
+        public const string CONF_SERVER_PORT = "SERVER_PORT";
+        public const string CONF_LOGIN_ALLOW_FAKE_USER = "LOGIN_ALLOW_FAKE_USER";
+        public const string CONF_LOGIN_FAKE_USER_TRIGGER = "LOGIN_FAKE_USER_TRIGGER";
+        public const string CONF_LOGIN_CHECK_USERNAME = "LOGIN_CHECK_USERNAME";
+        public const string CONF_LOGIN_AUTH_DELAY = "LOGIN_AUTH_DELAY";
+        public const string CONF_SERVER_UNLOGIN_TIMEOUT = "SERVER_UNLOGIN_TIMEOUT";
+        public const string CONF_SERVER_ENABLE_SMART_BAN_IP = "SERVER_ENABLE_SMART_BAN_IP";
+        public const string CONF_SERVER_BAN_IP_TRIGGER = "SERVER_BAN_IP_TRIGGER";
+        public const string CONF_SERVER_BAN_IP_DURATION = "SERVER_BAN_IP_DURATION";
+        public const string CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT = "SERVER_DISCONNECT_INACTIVE_TIMEOUT";
+        public const string CONF_SERVER_ENCODING = "SERVER_ENCODING";
+
+        public const string CONF_UI_LOG_LIMIT = "UI_LOG_LIMIT";
 
         public const string CMD_USER = "USER";
         public const string CMD_USER_ADD = "ADD";
@@ -34,8 +46,6 @@ namespace ftp_server
             }
             else {
                 List<string> defaults = new List<string>();
-                defaults.Add(CombineLine(CMD_CONF, CONF_MAX_USER, 48));
-                defaults.Add(CombineLine(CMD_CONF, CONF_PORT, 21));
                 defaults.Add(CombineLine(CMD_USER, CMD_USER_ADD, User.ANONYMOUS, "", "lr", Path.GetFullPath("." + Path.DirectorySeparatorChar + "FtpDir"), true));
                 return defaults.ToArray();
             }
@@ -47,9 +57,25 @@ namespace ftp_server
 
         public static string[] GenerateConfigurations() {
             List<string> lines = new List<string>();
-            lines.Add(CombineLine(CMD_CONF, CONF_PORT, instance.Port));
-            lines.Add(CombineLine(CMD_CONF, CONF_MAX_USER, instance.MaxUserCount));
-            foreach(User user in Login.userList.Values) {
+
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_PORT, instance.Port));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_MAX_USER, instance.MaxUserCount));
+
+            lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_ALLOW_FAKE_USER,Login.AllowFakeUser));
+            lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_FAKE_USER_TRIGGER, Login.FakeUserTrigger));
+            lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_CHECK_USERNAME, Login.CheckUser));
+            lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_AUTH_DELAY, Login.AuthDelayTime));
+
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_UNLOGIN_TIMEOUT, instance.UnloginedTimeout));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENABLE_SMART_BAN_IP, instance.enableSmartBanIp));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_TRIGGER, instance.BanIpTrigger));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_DURATION, instance.BanIpDuration));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT, instance.DisconnectInactiveTimeout));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENCODING, instance.Encodings));
+            
+            lines.Add(CombineLine(CMD_CONF, CONF_UI_LOG_LIMIT, FrmMain.maxlog));
+
+            foreach (User user in Login.userList.Values) {
                 lines.Add(CombineLine(CMD_USER,CMD_USER_ADD,user.Username,user.Password,user.Permissions,user.Root,true));
             }
             return lines.ToArray();
@@ -107,28 +133,180 @@ namespace ftp_server
                 return NoEnoughArgs(argv[0], 2, argc);
             }
             switch (argv[1].ToUpper()) {
-                case CONF_MAX_USER:
+                case CONF_SERVER_MAX_USER:
                     {
-                        if (argc < 3) { return NoEnoughArgs(CONF_MAX_USER, 3, argc); }
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
                             instance.MaxUserCount = value;
-                            return "Set user limits to " + value;
+                            return "Set "+argv[1]+" to " + value;
                         }
                         else
                         {
                             return string.Format("[Error]: Bad number format '{0}'", argv[2]);
                         }
                     }
-                case CONF_PORT:
+                case CONF_SERVER_PORT:
                     {
-                        if (argc < 3) { return NoEnoughArgs(CONF_PORT, 3, argc); }
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
                             instance.Port = value;
-                            return "Set ftp port to " + value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+
+                case CONF_LOGIN_ALLOW_FAKE_USER:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        bool value = false;
+                        if (bool.TryParse(argv[2].ToLower(), out value))
+                        {
+                            Login.AllowFakeUser = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad boolean format '{0}'", argv[2]);
+                        }
+                    }
+
+                case CONF_LOGIN_CHECK_USERNAME:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        bool value = false;
+                        if (bool.TryParse(argv[2].ToLower(), out value))
+                        {
+                            Login.CheckUser = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad boolean format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_LOGIN_FAKE_USER_TRIGGER:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            Login.FakeUserTrigger = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_LOGIN_AUTH_DELAY:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            Login.AuthDelayTime = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+
+                case CONF_SERVER_ENABLE_SMART_BAN_IP:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        bool value = false;
+                        if (bool.TryParse(argv[2].ToLower(), out value))
+                        {
+                            instance.enableSmartBanIp = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad boolean format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_SERVER_UNLOGIN_TIMEOUT:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            instance.UnloginedTimeout = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_SERVER_BAN_IP_TRIGGER:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            instance.BanIpTrigger = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_SERVER_BAN_IP_DURATION:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            instance.BanIpDuration = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            instance.DisconnectInactiveTimeout= value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+
+                case CONF_SERVER_ENCODING:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        string value = argv[2];
+                        
+                            instance.Encodings = value;
+                            return "Set " + argv[1] + " to " + value;
+                    }
+                case CONF_UI_LOG_LIMIT:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                           FrmMain.maxlog=value;
+                            return "Set " + argv[1] + " to " + value;
                         }
                         else
                         {

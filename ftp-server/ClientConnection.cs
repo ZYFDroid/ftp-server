@@ -48,8 +48,9 @@ namespace ftp_server
             _client = client;
             _parent = server;
             _networkStream = _client.GetStream();
-            _reader = new StreamReader(_networkStream, Encoding.GetEncoding("GBK"));
-            _writer = new StreamWriter(_networkStream, Encoding.GetEncoding("GBK"));
+            _networkStream.ReadTimeout = server.DisconnectInactiveTimeout * 60000+2000;
+            _reader = new StreamReader(_networkStream, Encoding.GetEncoding(_parent.Encodings));
+            _writer = new StreamWriter(_networkStream, Encoding.GetEncoding(_parent.Encodings));
         }
 
         public bool Disposed {
@@ -177,10 +178,7 @@ namespace ftp_server
         {
             try
             {
-                _writer.WriteLine("220 全民制作人们 大家好");
-                _writer.WriteLine("220 我是练习时长两年半的个人练习生蔡徐坤");
-                _writer.WriteLine("220 喜欢唱，跳，Rap，篮球");
-                _writer.WriteLine("220 Music!");
+                _writer.WriteLine("220 全民制作人们 大家好 我是练习时长两年半的个人练习生蔡徐坤 喜欢唱，跳，Rap，篮球 Music!");
                 _writer.Flush();
             }
             catch(IOException ex)
@@ -505,6 +503,10 @@ namespace ftp_server
             if (pathname == "-l") {
                 return List("", isFunny);
             }
+            if (pathname == "-a")
+            {
+                return List("", isFunny);
+            }
             pathname = NormalizeFilename(pathname);
 
             if(pathname != null)
@@ -603,7 +605,7 @@ namespace ftp_server
 
             using (NetworkStream stream = _dataClient.GetStream())
             {
-                _dataWriter = new StreamWriter(stream, Encoding.GetEncoding("GBK"));
+                _dataWriter = new StreamWriter(stream, Encoding.GetEncoding(_parent.Encodings));
                 StringBuilder list = new StringBuilder();
                 IEnumerable<string> directories;
                 if (!isFunny)
@@ -812,7 +814,7 @@ namespace ftp_server
                 FileInfo file = new FileInfo(filepath);
                 return "213 " + file.Length;
             }
-            catch(Exception ex) {
+            catch{
                
             }
             return "213 0";
@@ -865,7 +867,7 @@ namespace ftp_server
 
             using (StreamReader rdr = new StreamReader(input))
             {
-                using (StreamWriter wtr = new StreamWriter(output, Encoding.GetEncoding("GBK")))
+                using (StreamWriter wtr = new StreamWriter(output, Encoding.GetEncoding(_parent.Encodings)))
                 {
                     while ((count = rdr.Read(buffer, 0, buffer.Length)) > 0)
                     {
@@ -922,7 +924,7 @@ namespace ftp_server
             {
                 return path.StartsWith(_user.Root);
             }
-            catch(Exception ex) { return false; }
+            catch { return false; }
         }
         
         #endregion
@@ -955,6 +957,9 @@ namespace ftp_server
                 {
                     _writer.Close();
                 }
+                if (_dataWriter != null) {
+                    _dataWriter.Dispose();
+                }
             }
             ConsoleWriteLine(String.Format("[LEAVE {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "User quit"));
             if (!_isValidSession || _user.IsFake)
@@ -968,7 +973,7 @@ namespace ftp_server
         }
 
         public bool checkTimeout() {
-            if ((!_user.LoggedIn || _user.IsFake) && SysClock.Mill - createTime > _parent.UnloginedTimeout) {
+            if ((!_user.LoggedIn || _user.IsFake) && SysClock.Mill - createTime > _parent.UnloginedTimeout * 1000L) {
                 ConsoleWriteLine("[WARNING] Kicked a user that not logged in before timeout or is fake");
                 this.Dispose();
                 return true;
@@ -981,7 +986,7 @@ namespace ftp_server
             {
                 _parent.ConsoleWriteLine(str);
             }
-            catch (NullReferenceException ex) { }
+            catch { }
         }
     }
     static class SysClock

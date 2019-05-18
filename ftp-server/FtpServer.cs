@@ -14,13 +14,19 @@ namespace ftp_server
     {
         public event EventHandler<string> OnConsoleWriteLine;
 
-        public long UnloginedTimeout = 16000;
+        public long UnloginedTimeout = 16;
 
         public int MaxUserCount = 30;
 
         public int BanIpTrigger = 20;
 
-        public long BanIpDuration = 60000;
+        public string Encodings = "GBK";
+
+        public long BanIpDuration = 1;
+
+        public int DisconnectInactiveTimeout = 10;
+
+        public bool enableSmartBanIp = true;
 
         internal SortedList<string, long> blockedIpAddress=new SortedList<string, long>();
         internal SortedList<string, int> blockingcount=new SortedList<string, int>();
@@ -122,10 +128,14 @@ namespace ftp_server
             {
                 OnConsoleWriteLine.Invoke(this, str);
             }
-            catch (NullReferenceException ex) { }
+            catch { }
         }
 
         internal void onIpDisturb(string ip) {
+            if (!enableSmartBanIp) {
+                blockedIpAddress.Clear();
+                return;
+            }
             if (blockedIpAddress.ContainsKey(ip)) { return; }
             if (blockingcount.ContainsKey(ip))
             {
@@ -133,7 +143,7 @@ namespace ftp_server
                 if (blockingcount[ip] > BanIpTrigger)
                 {
                     blockingcount.Remove(ip);
-                    blockedIpAddress.Add(ip, SysClock.Mill + BanIpDuration);
+                    blockedIpAddress.Add(ip, SysClock.Mill + BanIpDuration * 60000);
                     ConsoleWriteLine("[IPBLOCKER] Blocked " + ip);
                 }
             }

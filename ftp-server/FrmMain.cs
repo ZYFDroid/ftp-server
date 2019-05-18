@@ -72,20 +72,24 @@ namespace ftp_server
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.WindowsShutDown || e.CloseReason==CloseReason.TaskManagerClosing) {
-                Configuration.PutConfigurations();
-                ftpserver.Dispose();
-                Program.ClearExceptionState();
-                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                fullExit();
                 return;
             }
             if (MessageBox.Show("是否退出服务器?\r\n您的配置将会保存", "是否退出", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==DialogResult.Yes) {
-                Configuration.PutConfigurations();
-                ftpserver.Dispose();
-                Program.ClearExceptionState();
-                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                fullExit();
             }
             e.Cancel = true;
         }
+
+        private void fullExit() {
+            Configuration.PutConfigurations();
+            notifyIcon.Icon = null;
+            notifyIcon.Visible = false;
+            ftpserver.Dispose();
+            Program.ClearExceptionState();
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+        }
+
         bool icon = false;
         private void infoUpdateTimer_Tick(object sender, EventArgs e)
         {
@@ -100,13 +104,13 @@ namespace ftp_server
                 notifyIcon.Icon = Program.FTP_IDLE;
             }
             if (hideCd >= 0) {
-                hideCd--; if (hideCd <= 0) {
+                hideCd--; if (hideCd < 0) {
                     this.ShowInTaskbar=!(this.WindowState == FormWindowState.Minimized) ;
                 }
             }
             if (showCd >= 0)
             {
-                showCd--; if (showCd <= 0)
+                showCd--; if (showCd < 0)
                 {
                     this.WindowState = FormWindowState.Normal ;
                 }
@@ -150,7 +154,7 @@ namespace ftp_server
                     Directory.CreateDirectory(txtPath.Text);
                 }
             }
-            catch(Exception ex) {
+            catch {
                 MessageBox.Show("无效的根目录:\r\n"+txtPath.Text, "无效根目录");
                 return;
             }
@@ -283,6 +287,11 @@ namespace ftp_server
         private void testexceptionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             throw new InvalidOperationException();
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new FrmConfig().ShowDialog();
         }
     }
 }
