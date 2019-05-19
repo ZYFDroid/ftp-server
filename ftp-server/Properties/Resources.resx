@@ -127,6 +127,24 @@
   <data name="icon_ftp_active2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icon_ftp_active2.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="icon_ftp_active3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_ftp_active3.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_ftp_active4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_ftp_active4.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_ftp_active5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_ftp_active5.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_ftp_active6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_ftp_active6.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_ftp_active7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_ftp_active7.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_ftp_active8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\icon_ftp_active8.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="icon_ftp_idle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\icon_ftp_idle.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

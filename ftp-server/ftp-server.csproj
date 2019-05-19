@@ -42,6 +42,7 @@
   <PropertyGroup>
     <ApplicationIcon>icon_ftp.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -116,6 +117,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="icon_ftp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon_ftp_active3.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon_ftp_active4.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon_ftp_active5.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon_ftp_active6.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon_ftp_active7.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="icon_ftp_active8.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

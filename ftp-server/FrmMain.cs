@@ -90,15 +90,18 @@ namespace ftp_server
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
-        bool icon = false;
+        int iconframe = 0;
         private void infoUpdateTimer_Tick(object sender, EventArgs e)
         {
             int userCount= ftpserver.UserCount;
             lblUserCount.Text = "在线人数：" + userCount;
             if (userCount > 0)
             {
-                icon = !icon;
-                notifyIcon.Icon = icon ? Program.FTP_ACTIVE1 : Program.FTP_ACTIVE2;
+                notifyIcon.Icon = Program.FTP_ACTIVE[iconframe];
+                iconframe++;
+                if (iconframe >= Program.FTP_ACTIVE.Count) {
+                    iconframe = 0;
+                } 
             }
             else {
                 notifyIcon.Icon = Program.FTP_IDLE;

@@ -13,8 +13,7 @@ namespace ftp_server
     {
         public static Icon AppIcon;
         public static Icon FTP_IDLE;
-        public static Icon FTP_ACTIVE1;
-        public static Icon FTP_ACTIVE2;
+        public static List<Icon> FTP_ACTIVE = new List<Icon>();
         [STAThread]
         static void Main(string[] args)
         {
@@ -23,8 +22,16 @@ namespace ftp_server
             System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(1);
             AppIcon = Properties.Resources.icon_ftp;
             FTP_IDLE = Properties.Resources.icon_ftp_idle;
-            FTP_ACTIVE1 = Properties.Resources.icon_ftp_active2;
-            FTP_ACTIVE2 = Properties.Resources.icon_ftp_active1;
+
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active1);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active2);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active3);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active4);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active5);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active6);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active7);
+            FTP_ACTIVE.Add(Properties.Resources.icon_ftp_active8);
+
             Application.SetCompatibleTextRenderingDefault(false);
             Application.EnableVisualStyles();
             Application.Run(new FrmMain());
