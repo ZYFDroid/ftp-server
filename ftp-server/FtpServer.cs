@@ -14,19 +14,19 @@ namespace ftp_server
     {
         public event EventHandler<string> OnConsoleWriteLine;
 
-        public long UnloginedTimeout = 16;
+        public static long UnloginedTimeout = 16;
 
-        public int MaxUserCount = 30;
+        public static int MaxUserCount = 30;
 
-        public int BanIpTrigger = 20;
+        public static int BanIpTrigger = 20;
 
-        public string Encodings = "GBK";
+        public static string Encodings = "GBK";
 
-        public long BanIpDuration = 1;
+        public static long BanIpDuration = 1;
 
-        public int DisconnectInactiveTimeout = 10;
+        public static int DisconnectInactiveTimeout = 10;
 
-        public bool enableSmartBanIp = true;
+        public static bool enableSmartBanIp = true;
 
         internal SortedList<string, long> blockedIpAddress=new SortedList<string, long>();
         internal SortedList<string, int> blockingcount=new SortedList<string, int>();
@@ -39,7 +39,7 @@ namespace ftp_server
 
         public FtpServer(){}
 
-        public int Port = 21;
+        public static int Port = 21;
 
         public bool Disposed {
             get { return _disposed; }

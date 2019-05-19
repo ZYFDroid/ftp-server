@@ -57,14 +57,12 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.testexceptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.valMaxUser = new System.Windows.Forms.NumericUpDown();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.trayMnuMain = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,12 +71,9 @@
             this.btnNewUser = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.userEditBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.valMaxUser)).BeginInit();
             this.trayMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -103,7 +98,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 83);
+            this.label1.Location = new System.Drawing.Point(10, 29);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 12);
             this.label1.TabIndex = 3;
@@ -290,9 +285,9 @@
             this.listUser.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listUser.FormattingEnabled = true;
             this.listUser.ItemHeight = 12;
-            this.listUser.Location = new System.Drawing.Point(2, 2);
+            this.listUser.Location = new System.Drawing.Point(0, 1);
             this.listUser.Name = "listUser";
-            this.listUser.Size = new System.Drawing.Size(201, 108);
+            this.listUser.Size = new System.Drawing.Size(201, 168);
             this.listUser.TabIndex = 1;
             this.listUser.SelectedIndexChanged += new System.EventHandler(this.listUser_SelectedIndexChanged);
             // 
@@ -362,19 +357,26 @@
             // mnuSave
             // 
             this.mnuSave.Name = "mnuSave";
-            this.mnuSave.Size = new System.Drawing.Size(152, 22);
-            this.mnuSave.Text = "保存配置(&S)";
+            this.mnuSave.Size = new System.Drawing.Size(163, 22);
+            this.mnuSave.Text = "立即保存配置(&S)";
             this.mnuSave.Click += new System.EventHandler(this.mnuSave_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
+            this.toolStripMenuItem1.Text = "服务器选项(&I)";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(152, 22);
+            this.mnuExit.Size = new System.Drawing.Size(163, 22);
             this.mnuExit.Text = "退出(&X)";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
@@ -401,49 +403,6 @@
             this.testexceptionToolStripMenuItem.Text = "testexception";
             this.testexceptionToolStripMenuItem.Visible = false;
             this.testexceptionToolStripMenuItem.Click += new System.EventHandler(this.testexceptionToolStripMenuItem_Click);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.valMaxUser);
-            this.groupBox3.Location = new System.Drawing.Point(12, 29);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(204, 51);
-            this.groupBox3.TabIndex = 6;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "服务器管理";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(11, 25);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 12);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "最大人数";
-            // 
-            // valMaxUser
-            // 
-            this.valMaxUser.Location = new System.Drawing.Point(71, 20);
-            this.valMaxUser.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.valMaxUser.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.valMaxUser.Name = "valMaxUser";
-            this.valMaxUser.Size = new System.Drawing.Size(122, 21);
-            this.valMaxUser.TabIndex = 0;
-            this.valMaxUser.Value = new decimal(new int[] {
-            40,
-            0,
-            0,
-            0});
-            this.valMaxUser.ValueChanged += new System.EventHandler(this.valMaxUser_ValueChanged);
             // 
             // notifyIcon
             // 
@@ -501,17 +460,10 @@
             this.panel1.BackColor = System.Drawing.Color.White;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel1.Controls.Add(this.listUser);
-            this.panel1.Location = new System.Drawing.Point(12, 98);
+            this.panel1.Location = new System.Drawing.Point(12, 44);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(204, 114);
+            this.panel1.Size = new System.Drawing.Size(204, 168);
             this.panel1.TabIndex = 7;
-            // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.toolStripMenuItem1.Text = "服务器选项(&I)";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // FrmMain
             // 
@@ -520,7 +472,6 @@
             this.ClientSize = new System.Drawing.Size(624, 442);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnNewUser);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
@@ -541,9 +492,6 @@
             this.groupBox2.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.valMaxUser)).EndInit();
             this.trayMenu.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -575,10 +523,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Label lblUserCount;
-        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnKickAll;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.NumericUpDown valMaxUser;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mnuExit;
         private System.Windows.Forms.ToolStripMenuItem 关于AToolStripMenuItem;

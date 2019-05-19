@@ -37,7 +37,6 @@ namespace ftp_server
                         break;
                 }
             }
-            valMaxUser.Value = ftpserver.MaxUserCount;
             btnNewUser.Enabled = true;
             loadUserList();
         }
@@ -55,7 +54,7 @@ namespace ftp_server
             }
         }
 
-        public static int maxlog = 480;
+        public static int maxlog = 160;
         List<string> logs = new List<string>();
 
         private void onLog(string log) {
@@ -118,11 +117,6 @@ namespace ftp_server
                     this.WindowState = FormWindowState.Normal ;
                 }
             }
-        }
-
-        private void valMaxUser_ValueChanged(object sender, EventArgs e)
-        {
-            ftpserver.MaxUserCount = (int)valMaxUser.Value;
         }
 
         private string oldSelectedUser = "";

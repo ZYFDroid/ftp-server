@@ -106,7 +106,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="icon_ftp_active1.ico" />
   </ItemGroup>
   <ItemGroup>

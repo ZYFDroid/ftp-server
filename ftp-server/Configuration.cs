@@ -58,20 +58,20 @@ namespace ftp_server
         public static string[] GenerateConfigurations() {
             List<string> lines = new List<string>();
 
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_PORT, instance.Port));
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_MAX_USER, instance.MaxUserCount));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_PORT, FtpServer.Port));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_MAX_USER, FtpServer.MaxUserCount));
 
             lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_ALLOW_FAKE_USER,Login.AllowFakeUser));
             lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_FAKE_USER_TRIGGER, Login.FakeUserTrigger));
             lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_CHECK_USERNAME, Login.CheckUser));
             lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_AUTH_DELAY, Login.AuthDelayTime));
 
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_UNLOGIN_TIMEOUT, instance.UnloginedTimeout));
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENABLE_SMART_BAN_IP, instance.enableSmartBanIp));
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_TRIGGER, instance.BanIpTrigger));
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_DURATION, instance.BanIpDuration));
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT, instance.DisconnectInactiveTimeout));
-            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENCODING, instance.Encodings));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_UNLOGIN_TIMEOUT, FtpServer.UnloginedTimeout));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENABLE_SMART_BAN_IP,FtpServer.enableSmartBanIp));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_TRIGGER, FtpServer.BanIpTrigger));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_DURATION, FtpServer.BanIpDuration));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT, FtpServer.DisconnectInactiveTimeout));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENCODING, FtpServer.Encodings));
             
             lines.Add(CombineLine(CMD_CONF, CONF_UI_LOG_LIMIT, FrmMain.maxlog));
 
@@ -101,8 +101,9 @@ namespace ftp_server
         public static string InterpreteConfigurations(string[] lines) {
             StringBuilder output = new StringBuilder();
             for (int i = 0; i < lines.Length; i++) {
-                string line = lines[i];
+                string line = lines[i].Trim();
                 if (line.StartsWith("#")) { break; }
+                if(line==""){ break; }
                 string[] commands = line.Split(SPLIT);
                 output.AppendLine("Line " + (i + 1) + ": " + performAction(commands));
             }
@@ -139,7 +140,7 @@ namespace ftp_server
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
-                            instance.MaxUserCount = value;
+                            FtpServer.MaxUserCount = value;
                             return "Set "+argv[1]+" to " + value;
                         }
                         else
@@ -153,7 +154,7 @@ namespace ftp_server
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
-                            instance.Port = value;
+                            FtpServer.Port = value;
                             return "Set " + argv[1] + " to " + value;
                         }
                         else
@@ -226,7 +227,7 @@ namespace ftp_server
                         bool value = false;
                         if (bool.TryParse(argv[2].ToLower(), out value))
                         {
-                            instance.enableSmartBanIp = value;
+                            FtpServer.enableSmartBanIp = value;
                             return "Set " + argv[1] + " to " + value;
                         }
                         else
@@ -240,7 +241,7 @@ namespace ftp_server
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
-                            instance.UnloginedTimeout = value;
+                            FtpServer.UnloginedTimeout = value;
                             return "Set " + argv[1] + " to " + value;
                         }
                         else
@@ -254,7 +255,7 @@ namespace ftp_server
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
-                            instance.BanIpTrigger = value;
+                            FtpServer.BanIpTrigger = value;
                             return "Set " + argv[1] + " to " + value;
                         }
                         else
@@ -268,7 +269,7 @@ namespace ftp_server
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
-                            instance.BanIpDuration = value;
+                            FtpServer.BanIpDuration = value;
                             return "Set " + argv[1] + " to " + value;
                         }
                         else
@@ -282,7 +283,7 @@ namespace ftp_server
                         int value = 0;
                         if (int.TryParse(argv[2], out value))
                         {
-                            instance.DisconnectInactiveTimeout= value;
+                            FtpServer.DisconnectInactiveTimeout= value;
                             return "Set " + argv[1] + " to " + value;
                         }
                         else
@@ -296,7 +297,7 @@ namespace ftp_server
                         if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
                         string value = argv[2];
                         
-                            instance.Encodings = value;
+                            FtpServer.Encodings = value;
                             return "Set " + argv[1] + " to " + value;
                     }
                 case CONF_UI_LOG_LIMIT:

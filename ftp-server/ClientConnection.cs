@@ -36,6 +36,7 @@ namespace ftp_server
         #endregion
 
         bool _isValidSession = false;
+        
 
         public ClientConnection(TcpClient client,FtpServer server)
         {
@@ -48,9 +49,9 @@ namespace ftp_server
             _client = client;
             _parent = server;
             _networkStream = _client.GetStream();
-            _networkStream.ReadTimeout = server.DisconnectInactiveTimeout * 60000+2000;
-            _reader = new StreamReader(_networkStream, Encoding.GetEncoding(_parent.Encodings));
-            _writer = new StreamWriter(_networkStream, Encoding.GetEncoding(_parent.Encodings));
+            _networkStream.ReadTimeout = FtpServer.DisconnectInactiveTimeout * 60000+2000;
+            _reader = new StreamReader(_networkStream, Encoding.GetEncoding(FtpServer.Encodings));
+            _writer = new StreamWriter(_networkStream, Encoding.GetEncoding(FtpServer.Encodings));
         }
 
         public bool Disposed {
@@ -100,7 +101,7 @@ namespace ftp_server
                     response = Passive();
                     break;
                 case "LIST":
-                    response = List(argument,!_user.CanList);
+                    response = List(argument,_user.IsFake);
                     break;
                 case "SYST":
                     response = "215 UNIX Type: L8";
@@ -155,6 +156,7 @@ namespace ftp_server
             return response;
         }
 
+
         private string LoginResponse(string cmd, string argument)
         {
             string response = "";
@@ -166,6 +168,14 @@ namespace ftp_server
                     break;
                 case "PASS":
                     response = CheckPassword(argument);
+                    break;
+                case "QUIT":
+                    response = "221 Bye";
+                    Dispose();
+                    break;
+                case "BYE":
+                    response = "221 Bye";
+                    Dispose();
                     break;
                 default:
                     response = "530 Not logged in";
@@ -509,14 +519,14 @@ namespace ftp_server
             }
             pathname = NormalizeFilename(pathname);
 
-            if(pathname != null)
-            {   
+            if (pathname != null)
+            {
                 try
-                { 
+                {
                     _writer.WriteLine("150 Opening Passive mode data transfer for LIST");
                     _writer.Flush();
 
-                    return HandleList(pathname,isFunny);
+                    return HandleList(pathname, isFunny);
                 }
                 catch (IOException ex)
                 {
@@ -524,7 +534,7 @@ namespace ftp_server
                 }
 
             }
-
+            
             return "450 Requested file action not taken";
         }
 
@@ -605,12 +615,19 @@ namespace ftp_server
 
             using (NetworkStream stream = _dataClient.GetStream())
             {
-                _dataWriter = new StreamWriter(stream, Encoding.GetEncoding(_parent.Encodings));
+                _dataWriter = new StreamWriter(stream, Encoding.GetEncoding(FtpServer.Encodings));
                 StringBuilder list = new StringBuilder();
                 IEnumerable<string> directories;
                 if (!isFunny)
                 {
-                    directories = Directory.EnumerateDirectories(pathname);
+                    if (_user.CanList)
+                    {
+                        directories = Directory.EnumerateDirectories(pathname);
+                    }
+                    else
+                    {
+                        directories = new List<string>();
+                    }
                 }
                 else {
                     directories = new List<string>(new string[] {
@@ -634,7 +651,14 @@ namespace ftp_server
                 IEnumerable<string> files;
                 if (!isFunny)
                 {
-                    files = Directory.EnumerateFiles(pathname);
+                    if (_user.CanList)
+                    {
+                        files = Directory.EnumerateFiles(pathname);
+                    }
+                    else
+                    {
+                        files = new List<string>(new string[] { "您没有查看文件列表的权限" });
+                    }
                 }
                 else
                 {
@@ -647,7 +671,7 @@ namespace ftp_server
 
                 foreach (string file in files)
                 {
-                    if (isFunny)
+                    if (isFunny || (!_user.CanList))
                     {
                         list.Append(String.Format("-rwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", 2333, file)).Append("\n");
                     }
@@ -867,7 +891,7 @@ namespace ftp_server
 
             using (StreamReader rdr = new StreamReader(input))
             {
-                using (StreamWriter wtr = new StreamWriter(output, Encoding.GetEncoding(_parent.Encodings)))
+                using (StreamWriter wtr = new StreamWriter(output, Encoding.GetEncoding(FtpServer.Encodings)))
                 {
                     while ((count = rdr.Read(buffer, 0, buffer.Length)) > 0)
                     {
@@ -973,7 +997,7 @@ namespace ftp_server
         }
 
         public bool checkTimeout() {
-            if ((!_user.LoggedIn || _user.IsFake) && SysClock.Mill - createTime > _parent.UnloginedTimeout * 1000L) {
+            if ((!_user.LoggedIn) && SysClock.Mill - createTime > FtpServer.UnloginedTimeout * 1000L) {
                 ConsoleWriteLine("[WARNING] Kicked a user that not logged in before timeout or is fake");
                 this.Dispose();
                 return true;
