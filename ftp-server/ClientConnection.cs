@@ -204,7 +204,13 @@ namespace ftp_server
             {
                 while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
                 {
-                    ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}",_user.Username,_user.RemoteAddress,line));
+                    if (!line.StartsWith("PASS"))
+                    {
+                        ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, line));
+                    }
+                    else {
+                        ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "PASS **********"));
+                    }
                     string response = null;
 
                     string[] command = line.Split(' ');
