@@ -12,11 +12,14 @@ namespace ftp_server
 {
     class FtpServer : IDisposable
     {
+
         public event EventHandler<string> OnConsoleWriteLine;
 
         public static long UnloginedTimeout = 16;
 
         public static int MaxUserCount = 30;
+
+        public static long limitedFileSizeMB = 0;
 
         public static int BanIpTrigger = 20;
 

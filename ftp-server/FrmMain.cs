@@ -13,6 +13,9 @@ namespace ftp_server
 {
     public partial class FrmMain : Form
     {
+
+        public static bool WriteLogToFile = false;
+
         public FrmMain()
         {
             InitializeComponent();
@@ -39,6 +42,24 @@ namespace ftp_server
             }
             btnNewUser.Enabled = true;
             loadUserList();
+            if (WriteLogToFile)
+            {
+                String logpath = Path.GetFullPath(string.Format("ftptrace-{0:yyyy\\-MM\\-dd\\-HH\\-mm\\-ss\\-fff}.log", DateTime.Now));
+                logFileStream = new FileStream(logpath, FileMode.Append, FileAccess.Write);
+                foreach (String before in logs) {
+                    writeLogLine(before);
+                }
+            }
+        }
+
+        FileStream logFileStream;
+
+        private void writeLogLine(String line) {
+            if (WriteLogToFile && null != logFileStream) {
+                byte[] b = Encoding.Default.GetBytes(line+"\r\n");
+                logFileStream.Write(b, 0, b.Length);
+                logFileStream.Flush();
+            }
         }
 
         delegate void LogText(String s);
@@ -65,6 +86,7 @@ namespace ftp_server
                 while (logs.Count > maxlog) { logs.RemoveAt(0); }
             }
             logText.AppendText(log + "\r\n");
+            writeLogLine(log);
             if (logText.Lines.Length > 2 * maxlog) { logText.Lines = logs.ToArray(); logText.AppendText("\r\n"); }
         }
 
@@ -85,6 +107,8 @@ namespace ftp_server
             notifyIcon.Icon = null;
             notifyIcon.Visible = false;
             ftpserver.Dispose();
+            logFileStream.Close();
+            logFileStream.Dispose();
             Program.ClearExceptionState();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }

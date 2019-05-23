@@ -22,6 +22,7 @@ namespace ftp_server
             try { numPort.Value = FtpServer.Port; } catch { }
             try { numUserLimit.Value = FtpServer.MaxUserCount; } catch { }
             try { txtEncoding.Text = FtpServer.Encodings; } catch { }
+            try { numFileSizeLimit.Value = FtpServer.limitedFileSizeMB; } catch { }
 
             try { chkNocheckUn.Checked = !Login.CheckUser; } catch { }
             try { numLoginDelay.Value = Login.AuthDelayTime; } catch { }
@@ -37,6 +38,7 @@ namespace ftp_server
             try { numBanIpTime.Value = FtpServer.BanIpDuration; } catch { }
 
             try { numLogCount.Value = FrmMain.maxlog; } catch { }
+            try { chkWriteLog.Checked = FrmMain.WriteLogToFile; } catch { }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -44,6 +46,7 @@ namespace ftp_server
             FtpServer.Port = (int)numPort.Value;
             FtpServer.MaxUserCount = (int)numUserLimit.Value;
             FtpServer.Encodings = txtEncoding.Text;
+            FtpServer.limitedFileSizeMB = (int)numFileSizeLimit.Value;
 
             Login.CheckUser = !chkNocheckUn.Checked;
             Login.AuthDelayTime = (int)numLoginDelay.Value;
@@ -59,6 +62,7 @@ namespace ftp_server
             FtpServer.BanIpDuration = (int)numBanIpTime.Value;
 
             FrmMain.maxlog = (int)numLogCount.Value;
+            FrmMain.WriteLogToFile = chkWriteLog.Checked;
 
             try
             {

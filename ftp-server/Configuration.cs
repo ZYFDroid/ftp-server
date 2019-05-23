@@ -20,6 +20,7 @@ namespace ftp_server
 
         public const string CONF_SERVER_MAX_USER = "SERVER_MAX_USER";
         public const string CONF_SERVER_PORT = "SERVER_PORT";
+        public const string CONF_SERVER_FILESIZE_LIMIT = "SERVER_FILESIZE_LIMIT";
         public const string CONF_LOGIN_ALLOW_FAKE_USER = "LOGIN_ALLOW_FAKE_USER";
         public const string CONF_LOGIN_FAKE_USER_TRIGGER = "LOGIN_FAKE_USER_TRIGGER";
         public const string CONF_LOGIN_CHECK_USERNAME = "LOGIN_CHECK_USERNAME";
@@ -32,6 +33,7 @@ namespace ftp_server
         public const string CONF_SERVER_ENCODING = "SERVER_ENCODING";
 
         public const string CONF_UI_LOG_LIMIT = "UI_LOG_LIMIT";
+        public const string CONF_UI_LOG_WRITEFILE = "UI_LOG_WRITEFILE";
 
         public const string CMD_USER = "USER";
         public const string CMD_USER_ADD = "ADD";
@@ -60,6 +62,7 @@ namespace ftp_server
 
             lines.Add(CombineLine(CMD_CONF, CONF_SERVER_PORT, FtpServer.Port));
             lines.Add(CombineLine(CMD_CONF, CONF_SERVER_MAX_USER, FtpServer.MaxUserCount));
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_FILESIZE_LIMIT, FtpServer.limitedFileSizeMB));
 
             lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_ALLOW_FAKE_USER,Login.AllowFakeUser));
             lines.Add(CombineLine(CMD_CONF, CONF_LOGIN_FAKE_USER_TRIGGER, Login.FakeUserTrigger));
@@ -74,6 +77,7 @@ namespace ftp_server
             lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENCODING, FtpServer.Encodings));
             
             lines.Add(CombineLine(CMD_CONF, CONF_UI_LOG_LIMIT, FrmMain.maxlog));
+            lines.Add(CombineLine(CMD_CONF, CONF_UI_LOG_WRITEFILE, FrmMain.WriteLogToFile));
 
             foreach (User user in Login.userList.Values) {
                 lines.Add(CombineLine(CMD_USER,CMD_USER_ADD,user.Username,user.Password,user.Permissions,user.Root,true));
@@ -162,7 +166,20 @@ namespace ftp_server
                             return string.Format("[Error]: Bad number format '{0}'", argv[2]);
                         }
                     }
-
+                case CONF_SERVER_FILESIZE_LIMIT:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            FtpServer.limitedFileSizeMB = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
                 case CONF_LOGIN_ALLOW_FAKE_USER:
                     {
                         if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
@@ -312,6 +329,20 @@ namespace ftp_server
                         else
                         {
                             return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
+                case CONF_UI_LOG_WRITEFILE:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        bool value = false;
+                        if (bool.TryParse(argv[2].ToLower(), out value))
+                        {
+                            FrmMain.WriteLogToFile = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad boolean format '{0}'", argv[2]);
                         }
                     }
                 default:

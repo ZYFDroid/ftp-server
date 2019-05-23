@@ -749,6 +749,10 @@ namespace ftp_server
             {
                 if(File.Exists(pathname))
                 {
+                    FileInfo fi = new FileInfo(pathname);
+                    if ((FtpServer.limitedFileSizeMB>0) && fi.Length > 1048576 * FtpServer.limitedFileSizeMB) {
+                        return "550 File too large";
+                    }
                     if (_passiveConn)
                     {
                         _passiveListener.BeginAcceptTcpClient(HandleRetrieve, pathname);
@@ -773,7 +777,7 @@ namespace ftp_server
                 if (File.Exists(pathname) || Directory.Exists(pathname)) {
                     return "450 File already exists.";
                 }
-                
+               
                 if (_passiveConn)
                 {
                     _passiveListener.BeginAcceptTcpClient(HandleStore, pathname);
@@ -802,23 +806,41 @@ namespace ftp_server
             {
                 _dataClient.EndConnect(res);
             }
-
+            long size;
             using (NetworkStream dataStream = _dataClient.GetStream())
             {
+                
                 using (FileStream fs = new FileStream(pathname, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 4096, FileOptions.SequentialScan))
                 {
-                    if(CopyStream(dataStream, fs) > 0)
-                    {
-                        try
-                        {
-                            _writer.WriteLine("226 Closing data connection, file transfer succesful");
-                            _writer.Flush();
-                        }
-                        catch(IOException ex)
-                        {
-                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
-                        }
-                    }
+                    size = CopyStream(dataStream, fs);
+                }
+            }
+            if (size >= 0)
+            {
+                try
+                {
+                    _writer.WriteLine("226 Closing data connection, file transfer succesful");
+                    _writer.Flush();
+                }
+                catch (IOException ex)
+                {
+                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                }
+            }
+            else
+            {
+                if (File.Exists(pathname))
+                {
+                    File.Delete(pathname);
+                }
+                try
+                {
+                    _writer.WriteLine("426 Closing data connection, file transfer unsuccesful");
+                    _writer.Flush();
+                }
+                catch (IOException ex)
+                {
+                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                 }
             }
             _dataClient.Close();
@@ -878,6 +900,10 @@ namespace ftp_server
                 {
                     output.Write(buffer, 0, count);
                     total += count;
+                    if (FtpServer.limitedFileSizeMB > 0 && total >= FtpServer.limitedFileSizeMB * 1048576L) {
+                        ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "FILE_TOO_LARGE"));
+                        return -1;
+                    }
                 }
                 catch(IOException ex)
                 {
