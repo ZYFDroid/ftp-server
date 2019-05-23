@@ -107,8 +107,11 @@ namespace ftp_server
             notifyIcon.Icon = null;
             notifyIcon.Visible = false;
             ftpserver.Dispose();
-            logFileStream.Close();
-            logFileStream.Dispose();
+            if (null != logFileStream)
+            {
+                logFileStream.Close();
+                logFileStream.Dispose();
+            }
             Program.ClearExceptionState();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
