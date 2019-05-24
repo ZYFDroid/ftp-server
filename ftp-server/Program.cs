@@ -18,6 +18,7 @@ namespace ftp_server
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            System.Threading.Thread.Sleep(1000);
             Application.ThreadException += Application_ThreadException;
             System.Diagnostics.Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(1);
             AppIcon = Properties.Resources.icon_ftp;

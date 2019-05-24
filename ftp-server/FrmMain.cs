@@ -317,5 +317,14 @@ namespace ftp_server
         {
             new FrmConfig().ShowDialog();
         }
+
+        private void mnuRestart_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("是否重启服务器", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+                fullExit();
+            }
+        }
     }
 }

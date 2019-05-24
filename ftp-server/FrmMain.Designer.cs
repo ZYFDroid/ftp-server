@@ -71,6 +71,7 @@
             this.btnNewUser = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
             this.userEditBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -349,6 +350,7 @@
             this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuSave,
             this.toolStripMenuItem1,
+            this.mnuRestart,
             this.toolStripSeparator2,
             this.mnuExit});
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
@@ -466,6 +468,13 @@
             this.panel1.Size = new System.Drawing.Size(204, 168);
             this.panel1.TabIndex = 7;
             // 
+            // mnuRestart
+            // 
+            this.mnuRestart.Name = "mnuRestart";
+            this.mnuRestart.Size = new System.Drawing.Size(163, 22);
+            this.mnuRestart.Text = "重启服务器(&R)";
+            this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -542,5 +551,6 @@
         private System.Windows.Forms.ToolStripMenuItem trayMnuExit;
         private System.Windows.Forms.ToolStripMenuItem testexceptionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem mnuRestart;
     }
 }
