@@ -58,6 +58,7 @@
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.关于AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +72,6 @@
             this.btnNewUser = new System.Windows.Forms.Button();
             this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.mnuRestart = new System.Windows.Forms.ToolStripMenuItem();
             this.userEditBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -371,6 +371,13 @@
             this.toolStripMenuItem1.Text = "服务器选项(&I)";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
+            // mnuRestart
+            // 
+            this.mnuRestart.Name = "mnuRestart";
+            this.mnuRestart.Size = new System.Drawing.Size(163, 22);
+            this.mnuRestart.Text = "重启服务器(&R)";
+            this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -468,13 +475,6 @@
             this.panel1.Size = new System.Drawing.Size(204, 168);
             this.panel1.TabIndex = 7;
             // 
-            // mnuRestart
-            // 
-            this.mnuRestart.Name = "mnuRestart";
-            this.mnuRestart.Size = new System.Drawing.Size(163, 22);
-            this.mnuRestart.Text = "重启服务器(&R)";
-            this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
-            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -489,7 +489,7 @@
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(640, 480);
+            this.MinimumSize = new System.Drawing.Size(560, 420);
             this.Name = "FrmMain";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "FTP服务器";
