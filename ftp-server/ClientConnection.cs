@@ -36,7 +36,8 @@ namespace ftp_server
         #endregion
 
         bool _isValidSession = false;
-        
+
+        bool _isFileTransfering = false;
 
         public ClientConnection(TcpClient client,FtpServer server)
         {
@@ -62,6 +63,7 @@ namespace ftp_server
         {
             _isValidSession = true;
             string response = "503 Bad sequence of commands";
+            _isFileTransfering = false;
             switch (cmd.ToUpper())
             {
                 case "USER":
@@ -108,11 +110,17 @@ namespace ftp_server
                     break;
                 case "RETR":
                     if (_user.CanRead)
+                    {
+                        _isFileTransfering = true;
                         response = Retrieve(argument);
+                    }
                     break;
                 case "STOR":
                     if (_user.CanWrite)
+                    {
+                        _isFileTransfering = true;
                         response = Store(argument);
+                    }
                     break;
                 case "DELE":
                     if (_user.CanDelete)
@@ -200,64 +208,71 @@ namespace ftp_server
             string line = null;
 
             _dataClient = new TcpClient();
-            try
+            bool exitflag = true;
+            while (exitflag)
             {
-                while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
+                try
                 {
-                    if (!line.StartsWith("PASS"))
+                    while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
                     {
-                        ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, line));
-                    }
-                    else {
-                        ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "PASS **********"));
-                    }
-                    string response = null;
-
-                    string[] command = line.Split(' ');
-
-                    string cmd = command[0].ToUpper();
-
-                    string argument = command.Length > 1 ? line.Substring(command[0].Length + 1) : null;
-
-                    if (string.IsNullOrWhiteSpace(argument))
-                        argument = null;
-
-                    if (_user.LoggedIn)
-                    {
-                        response = Response(cmd, argument);
-                    }
-                    else
-                    {
-                        response = LoginResponse(cmd, argument);
-                    }
-
-                    if (_client == null || !_client.Connected)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        try
+                        if (!line.StartsWith("PASS"))
                         {
-                            ConsoleWriteLine(String.Format("----[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
-                            _writer.WriteLine(response);
-                            _writer.Flush();
+                            ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, line));
                         }
-                        catch (IOException)
+                        else
                         {
-                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "Connection Lost."));
-                            break;
+                            ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "PASS **********"));
+                        }
+                        string response = null;
+
+                        string[] command = line.Split(' ');
+
+                        string cmd = command[0].ToUpper();
+
+                        string argument = command.Length > 1 ? line.Substring(command[0].Length + 1) : null;
+
+                        if (string.IsNullOrWhiteSpace(argument))
+                            argument = null;
+
+                        if (_user.LoggedIn)
+                        {
+                            response = Response(cmd, argument);
+                        }
+                        else
+                        {
+                            response = LoginResponse(cmd, argument);
                         }
 
-                        if (response.StartsWith("221"))
+                        if (_client == null || !_client.Connected)
                         {
                             break;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                ConsoleWriteLine(String.Format("----[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
+                                _writer.WriteLine(response);
+                                _writer.Flush();
+                            }
+                            catch (IOException)
+                            {
+                                ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "Connection Lost."));
+                                break;
+                            }
+
+                            if (response.StartsWith("221"))
+                            {
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception ex) {
-                ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress,ex.Message));
+                catch (Exception ex)
+                {
+                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    if (_isFileTransfering) { exitflag = true; } else { exitflag = false; }
+                }
             }
             Dispose();
         }
@@ -720,6 +735,7 @@ namespace ftp_server
 
             using (NetworkStream dataStream = _dataClient.GetStream())
             {
+                dataStream.ReadTimeout = 32000;
                 using (FileStream fs = new FileStream(pathname, FileMode.Open, FileAccess.Read))
                 {
                     FileInfo fi = new FileInfo(pathname);

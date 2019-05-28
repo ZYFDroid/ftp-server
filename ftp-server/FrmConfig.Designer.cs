@@ -32,6 +32,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.numFileSizeLimit = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
             this.numUserLimit = new System.Windows.Forms.NumericUpDown();
             this.numPort = new System.Windows.Forms.NumericUpDown();
             this.txtEncoding = new System.Windows.Forms.ComboBox();
@@ -67,16 +69,15 @@
             this.label11 = new System.Windows.Forms.Label();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.chkWriteLog = new System.Windows.Forms.CheckBox();
             this.numLogCount = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.chkWriteLog = new System.Windows.Forms.CheckBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.numFileSizeLimit = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numFileSizeLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUserLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).BeginInit();
             this.tabPage2.SuspendLayout();
@@ -96,7 +97,6 @@
             this.tabPage5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogCount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFileSizeLimit)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -155,6 +155,27 @@
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "一般设置";
+            // 
+            // numFileSizeLimit
+            // 
+            this.numFileSizeLimit.Location = new System.Drawing.Point(171, 106);
+            this.numFileSizeLimit.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
+            this.numFileSizeLimit.Name = "numFileSizeLimit";
+            this.numFileSizeLimit.Size = new System.Drawing.Size(120, 21);
+            this.numFileSizeLimit.TabIndex = 5;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(9, 110);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(155, 12);
+            this.label15.TabIndex = 4;
+            this.label15.Text = "文件大小限制（0为无限制）";
             // 
             // numUserLimit
             // 
@@ -416,7 +437,7 @@
             0,
             0});
             this.numInactiveTimeout.Minimum = new decimal(new int[] {
-            8,
+            1,
             0,
             0,
             0});
@@ -596,6 +617,16 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "主界面设置";
             // 
+            // chkWriteLog
+            // 
+            this.chkWriteLog.AutoSize = true;
+            this.chkWriteLog.Location = new System.Drawing.Point(9, 44);
+            this.chkWriteLog.Name = "chkWriteLog";
+            this.chkWriteLog.Size = new System.Drawing.Size(126, 16);
+            this.chkWriteLog.TabIndex = 2;
+            this.chkWriteLog.Text = "将Log写入日志文件";
+            this.chkWriteLog.UseVisualStyleBackColor = true;
+            // 
             // numLogCount
             // 
             this.numLogCount.Location = new System.Drawing.Point(110, 15);
@@ -638,37 +669,6 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // chkWriteLog
-            // 
-            this.chkWriteLog.AutoSize = true;
-            this.chkWriteLog.Location = new System.Drawing.Point(9, 44);
-            this.chkWriteLog.Name = "chkWriteLog";
-            this.chkWriteLog.Size = new System.Drawing.Size(126, 16);
-            this.chkWriteLog.TabIndex = 2;
-            this.chkWriteLog.Text = "将Log写入日志文件";
-            this.chkWriteLog.UseVisualStyleBackColor = true;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(9, 110);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(155, 12);
-            this.label15.TabIndex = 4;
-            this.label15.Text = "文件大小限制（0为无限制）";
-            // 
-            // numFileSizeLimit
-            // 
-            this.numFileSizeLimit.Location = new System.Drawing.Point(171, 106);
-            this.numFileSizeLimit.Maximum = new decimal(new int[] {
-            4096,
-            0,
-            0,
-            0});
-            this.numFileSizeLimit.Name = "numFileSizeLimit";
-            this.numFileSizeLimit.Size = new System.Drawing.Size(120, 21);
-            this.numFileSizeLimit.TabIndex = 5;
-            // 
             // FrmConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -689,6 +689,7 @@
             this.tabPage1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numFileSizeLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUserLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPort)).EndInit();
             this.tabPage2.ResumeLayout(false);
@@ -713,7 +714,6 @@
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogCount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numFileSizeLimit)).EndInit();
             this.ResumeLayout(false);
 
         }
