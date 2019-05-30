@@ -213,7 +213,7 @@ namespace ftp_server
             {
                 try
                 {
-                    while (!string.IsNullOrEmpty(line = _reader.ReadLine()))
+                    if (!string.IsNullOrEmpty(line = _reader.ReadLine()))
                     {
                         if (!line.StartsWith("PASS"))
                         {
@@ -267,6 +267,10 @@ namespace ftp_server
                             }
                         }
                     }
+                    else {
+                        exitflag = false;
+                    }
+                    
                 }
                 catch (ObjectDisposedException ex) {
                     exitflag = false;
