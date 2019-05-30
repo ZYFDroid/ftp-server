@@ -31,6 +31,8 @@ namespace ftp_server
 
         public static bool enableSmartBanIp = true;
 
+        public static int transferBufferSize =4096;
+
         internal SortedList<string, long> blockedIpAddress=new SortedList<string, long>();
         internal SortedList<string, int> blockingcount=new SortedList<string, int>();
 

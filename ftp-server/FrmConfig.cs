@@ -23,6 +23,7 @@ namespace ftp_server
             try { numUserLimit.Value = FtpServer.MaxUserCount; } catch { }
             try { txtEncoding.Text = FtpServer.Encodings; } catch { }
             try { numFileSizeLimit.Value = FtpServer.limitedFileSizeMB; } catch { }
+            try { numTransferBufferSize.Value = FtpServer.transferBufferSize; } catch { }
 
             try { chkNocheckUn.Checked = !Login.CheckUser; } catch { }
             try { numLoginDelay.Value = Login.AuthDelayTime; } catch { }
@@ -47,6 +48,7 @@ namespace ftp_server
             FtpServer.MaxUserCount = (int)numUserLimit.Value;
             FtpServer.Encodings = txtEncoding.Text;
             FtpServer.limitedFileSizeMB = (int)numFileSizeLimit.Value;
+            FtpServer.transferBufferSize = (int)numTransferBufferSize.Value;
 
             Login.CheckUser = !chkNocheckUn.Checked;
             Login.AuthDelayTime = (int)numLoginDelay.Value;

@@ -31,6 +31,7 @@ namespace ftp_server
         public const string CONF_SERVER_BAN_IP_DURATION = "SERVER_BAN_IP_DURATION";
         public const string CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT = "SERVER_DISCONNECT_INACTIVE_TIMEOUT";
         public const string CONF_SERVER_ENCODING = "SERVER_ENCODING";
+        public const string CONF_SERVER_TRANSFER_BUFFERSIZE = "SERVER_TRANSFER_BUFFERSIZE";
 
         public const string CONF_UI_LOG_LIMIT = "UI_LOG_LIMIT";
         public const string CONF_UI_LOG_WRITEFILE = "UI_LOG_WRITEFILE";
@@ -75,7 +76,8 @@ namespace ftp_server
             lines.Add(CombineLine(CMD_CONF, CONF_SERVER_BAN_IP_DURATION, FtpServer.BanIpDuration));
             lines.Add(CombineLine(CMD_CONF, CONF_SERVER_DISCONNECT_INACTIVE_TIMEOUT, FtpServer.DisconnectInactiveTimeout));
             lines.Add(CombineLine(CMD_CONF, CONF_SERVER_ENCODING, FtpServer.Encodings));
-            
+            lines.Add(CombineLine(CMD_CONF, CONF_SERVER_TRANSFER_BUFFERSIZE, FtpServer.transferBufferSize));
+
             lines.Add(CombineLine(CMD_CONF, CONF_UI_LOG_LIMIT, FrmMain.maxlog));
             lines.Add(CombineLine(CMD_CONF, CONF_UI_LOG_WRITEFILE, FrmMain.WriteLogToFile));
 
@@ -308,7 +310,20 @@ namespace ftp_server
                             return string.Format("[Error]: Bad number format '{0}'", argv[2]);
                         }
                     }
-
+                case CONF_SERVER_TRANSFER_BUFFERSIZE:
+                    {
+                        if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }
+                        int value = 0;
+                        if (int.TryParse(argv[2], out value))
+                        {
+                            FtpServer.transferBufferSize = value;
+                            return "Set " + argv[1] + " to " + value;
+                        }
+                        else
+                        {
+                            return string.Format("[Error]: Bad number format '{0}'", argv[2]);
+                        }
+                    }
                 case CONF_SERVER_ENCODING:
                     {
                         if (argc < 3) { return NoEnoughArgs(argv[1], 3, argc); }

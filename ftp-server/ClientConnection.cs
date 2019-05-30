@@ -268,6 +268,9 @@ namespace ftp_server
                         }
                     }
                 }
+                catch (ObjectDisposedException ex) {
+                    exitflag = false;
+                }
                 catch (Exception ex)
                 {
                     ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
@@ -896,11 +899,11 @@ namespace ftp_server
         {
             if (_transferType == "I")
             {
-                return CopyStreamImage(input, output, 4096);
+                return CopyStreamImage(input, output, FtpServer.transferBufferSize);
             }
             else
             {
-                return CopyStreamAscii(input, output, 4096);
+                return CopyStreamAscii(input, output, FtpServer.transferBufferSize);
             }
         }
 
