@@ -541,6 +541,14 @@ namespace ftp_server
             if (pathname == "-l") {
                 return List("", isFunny);
             }
+            if (pathname == "-al")
+            {
+                return List("", isFunny);
+            }
+            if (pathname == "-la")
+            {
+                return List("", isFunny);
+            }
             if (pathname == "-a")
             {
                 return List("", isFunny);
