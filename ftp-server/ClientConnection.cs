@@ -201,7 +201,7 @@ namespace ftp_server
             }
             catch(IOException ex)
             {
-                ConsoleWriteLine(ex.Message);
+                writelog(ex.Message);
                 return;
             }
 
@@ -217,11 +217,11 @@ namespace ftp_server
                     {
                         if (!line.StartsWith("PASS"))
                         {
-                            ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, line));
+                            writelog(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, line));
                         }
                         else
                         {
-                            ConsoleWriteLine(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "PASS **********"));
+                            writelog(String.Format("--[FROM {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "PASS **********"));
                         }
                         string response = null;
 
@@ -251,13 +251,13 @@ namespace ftp_server
                         {
                             try
                             {
-                                ConsoleWriteLine(String.Format("----[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
+                                writelog(String.Format("----[TO {0}@{1}] {2}", _user.Username, _user.RemoteAddress, response));
                                 _writer.WriteLine(response);
                                 _writer.Flush();
                             }
                             catch (IOException)
                             {
-                                ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "Connection Lost."));
+                                writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "Connection Lost."));
                                 break;
                             }
 
@@ -277,7 +277,7 @@ namespace ftp_server
                 }
                 catch (Exception ex)
                 {
-                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                     if (_isFileTransfering) { exitflag = true; } else { exitflag = false; }
                 }
             }
@@ -476,7 +476,7 @@ namespace ftp_server
                 
             }
             catch (Exception ex) {
-                ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
             }
             return "550 Fail to rename";
 
@@ -566,7 +566,7 @@ namespace ftp_server
                 }
                 catch (IOException ex)
                 {
-                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                 }
 
             }
@@ -582,7 +582,21 @@ namespace ftp_server
             {
                 if(File.Exists(pathname))
                 {
-                    File.Delete(pathname);
+                    if (FtpServer.useRecovery)
+                    {
+                        try
+                        {
+                            MoveFileToRecycle(pathname);
+                        }
+                        catch
+                        {
+                            return "500 Cannot delete file in recycle bin.";
+                        }
+                    }
+                    else
+                    {
+                        File.Delete(pathname);
+                    }
                 }
                 else
                 {
@@ -603,7 +617,20 @@ namespace ftp_server
             {
                 if(Directory.Exists(pathname))
                 {
-                    Directory.Delete(pathname);
+                    if (FtpServer.useRecovery)
+                    {
+                        try
+                        {
+                            MoveDirectoryToRecycle(pathname);
+                        }
+                        catch {
+                            return "500 Cannot delete file in recycle bin.";
+                        }
+                    }
+                    else
+                    {
+                        Directory.Delete(pathname);
+                    }
                 }
                 else
                 {
@@ -724,7 +751,7 @@ namespace ftp_server
                 }
                 catch (IOException ex)
                 {
-                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                     return "550 Requested action not taken";
                 }
             }
@@ -763,7 +790,7 @@ namespace ftp_server
                         }
                         catch(IOException ex)
                         {
-                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                            writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                         }
                     }
                 }
@@ -855,7 +882,7 @@ namespace ftp_server
                 }
                 catch (IOException ex)
                 {
-                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                 }
             }
             else
@@ -871,7 +898,7 @@ namespace ftp_server
                 }
                 catch (IOException ex)
                 {
-                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                 }
             }
             _dataClient.Close();
@@ -932,13 +959,13 @@ namespace ftp_server
                     output.Write(buffer, 0, count);
                     total += count;
                     if (FtpServer.limitedFileSizeMB > 0 && total >= FtpServer.limitedFileSizeMB * 1048576L) {
-                        ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "FILE_TOO_LARGE"));
+                        writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "FILE_TOO_LARGE"));
                         return -1;
                     }
                 }
                 catch(IOException ex)
                 {
-                    ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                    writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                     return -1; 
                 }                
             }
@@ -965,7 +992,7 @@ namespace ftp_server
                         }
                         catch (IOException ex)
                         {
-                            ConsoleWriteLine(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
+                            writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
                             return -1;
                         }
                     }
@@ -1048,7 +1075,7 @@ namespace ftp_server
                     _dataWriter.Dispose();
                 }
             }
-            ConsoleWriteLine(String.Format("[LEAVE {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "User quit"));
+            writelog(String.Format("[LEAVE {0}@{1}] {2}", _user.Username, _user.RemoteAddress, "User quit"));
             if (!_isValidSession || _user.IsFake)
             {
                 _parent.onIpDisturb(_user.RemoteAddress);
@@ -1061,19 +1088,43 @@ namespace ftp_server
 
         public bool checkTimeout() {
             if ((!_user.LoggedIn) && SysClock.Mill - createTime > FtpServer.UnloginedTimeout * 1000L) {
-                ConsoleWriteLine("[WARNING] Kicked a user that not logged in before timeout or is fake");
+                writelog("[WARNING] Kicked a user that not logged in before timeout or is fake");
                 this.Dispose();
                 return true;
             }
             return false;
         }
-        private void ConsoleWriteLine(string str)
+        private void writelog(string str)
         {
             try
             {
-                _parent.ConsoleWriteLine(str);
+                _parent.writelog(str);
             }
             catch { }
+        }
+
+        public const string recyclePath = "FtpRecycle";
+        private void MoveFileToRecycle(string fileName) {
+            string path = Path.GetFullPath(recyclePath);
+            if (fileName.StartsWith(path)) {
+                throw new AccessViolationException("Delete file in Recycle bin");
+            }
+            path = Path.Combine(path, DateTime.Now.ToString("yyyy\\-MM\\-dd\\-HH\\-mm\\-ss\\-") + SysClock.Mill.ToString());
+            Directory.CreateDirectory(path);
+            path = Path.Combine(path, Path.GetFileName(fileName));
+            File.Move(fileName, path);
+        }
+        private void MoveDirectoryToRecycle(string fileName)
+        {
+            string path = Path.GetFullPath(recyclePath);
+            if (fileName.StartsWith(path))
+            {
+                throw new AccessViolationException("Delete file in Recycle bin");
+            }
+            path = Path.Combine(path,DateTime.Now.ToString("yyyy\\-MM\\-dd\\-HH\\-mm\\-ss\\-")+ SysClock.Mill.ToString());
+            Directory.CreateDirectory(path);
+            path = Path.Combine(path,Path.GetFileName(fileName));
+            Directory.Move(fileName, path);
         }
     }
     static class SysClock

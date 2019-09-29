@@ -31,6 +31,10 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.numTransferBufferSize = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.numFileSizeLimit = new System.Windows.Forms.NumericUpDown();
             this.label15 = new System.Windows.Forms.Label();
@@ -73,13 +77,13 @@
             this.numLogCount = new System.Windows.Forms.NumericUpDown();
             this.label14 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.numTransferBufferSize = new System.Windows.Forms.NumericUpDown();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
+            this.chkUseRecovery = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numTransferBufferSize)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numFileSizeLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numUserLimit)).BeginInit();
@@ -101,8 +105,6 @@
             this.tabPage5.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogCount)).BeginInit();
-            this.groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTransferBufferSize)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -146,8 +148,61 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "一般设置";
             // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label17);
+            this.groupBox8.Controls.Add(this.label16);
+            this.groupBox8.Controls.Add(this.numTransferBufferSize);
+            this.groupBox8.Location = new System.Drawing.Point(4, 146);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(300, 96);
+            this.groupBox8.TabIndex = 1;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "缓冲区设置";
+            // 
+            // label17
+            // 
+            this.label17.Location = new System.Drawing.Point(9, 45);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(282, 40);
+            this.label17.TabIndex = 2;
+            this.label17.Text = "设置缓冲区大小可以调节服务器性能与并发的平衡\r\n更大的缓冲区能够带来更高的传输速度，而较小的缓冲区能够在有限的内存下实现更大的并发";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(9, 21);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(65, 12);
+            this.label16.TabIndex = 1;
+            this.label16.Text = "缓冲区大小";
+            // 
+            // numTransferBufferSize
+            // 
+            this.numTransferBufferSize.Location = new System.Drawing.Point(78, 17);
+            this.numTransferBufferSize.Maximum = new decimal(new int[] {
+            131072,
+            0,
+            0,
+            0});
+            this.numTransferBufferSize.Minimum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.numTransferBufferSize.Name = "numTransferBufferSize";
+            this.numTransferBufferSize.Size = new System.Drawing.Size(215, 21);
+            this.numTransferBufferSize.TabIndex = 0;
+            this.numTransferBufferSize.Value = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.chkUseRecovery);
             this.groupBox2.Controls.Add(this.numFileSizeLimit);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.numUserLimit);
@@ -186,7 +241,7 @@
             // 
             // numUserLimit
             // 
-            this.numUserLimit.Location = new System.Drawing.Point(54, 46);
+            this.numUserLimit.Location = new System.Drawing.Point(196, 17);
             this.numUserLimit.Maximum = new decimal(new int[] {
             2048,
             0,
@@ -198,7 +253,7 @@
             0,
             0});
             this.numUserLimit.Name = "numUserLimit";
-            this.numUserLimit.Size = new System.Drawing.Size(238, 21);
+            this.numUserLimit.Size = new System.Drawing.Size(93, 21);
             this.numUserLimit.TabIndex = 3;
             this.numUserLimit.Value = new decimal(new int[] {
             30,
@@ -220,7 +275,7 @@
             0,
             0});
             this.numPort.Name = "numPort";
-            this.numPort.Size = new System.Drawing.Size(238, 21);
+            this.numPort.Size = new System.Drawing.Size(93, 21);
             this.numPort.TabIndex = 3;
             this.numPort.Value = new decimal(new int[] {
             21,
@@ -236,15 +291,15 @@
             "GBK",
             "UTF-8",
             "ASCII"});
-            this.txtEncoding.Location = new System.Drawing.Point(54, 77);
+            this.txtEncoding.Location = new System.Drawing.Point(54, 49);
             this.txtEncoding.Name = "txtEncoding";
-            this.txtEncoding.Size = new System.Drawing.Size(238, 20);
+            this.txtEncoding.Size = new System.Drawing.Size(235, 20);
             this.txtEncoding.TabIndex = 2;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 80);
+            this.label3.Location = new System.Drawing.Point(7, 52);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 0;
@@ -253,7 +308,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 50);
+            this.label2.Location = new System.Drawing.Point(151, 21);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 0;
@@ -676,56 +731,25 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // groupBox8
+            // chkUseRecovery
             // 
-            this.groupBox8.Controls.Add(this.label17);
-            this.groupBox8.Controls.Add(this.label16);
-            this.groupBox8.Controls.Add(this.numTransferBufferSize);
-            this.groupBox8.Location = new System.Drawing.Point(4, 146);
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(300, 96);
-            this.groupBox8.TabIndex = 1;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "缓冲区设置";
+            this.chkUseRecovery.AutoSize = true;
+            this.chkUseRecovery.Location = new System.Drawing.Point(10, 80);
+            this.chkUseRecovery.Name = "chkUseRecovery";
+            this.chkUseRecovery.Size = new System.Drawing.Size(180, 16);
+            this.chkUseRecovery.TabIndex = 6;
+            this.chkUseRecovery.Text = "将用户删除的文件放入回收站";
+            this.chkUseRecovery.UseVisualStyleBackColor = true;
             // 
-            // numTransferBufferSize
+            // button1
             // 
-            this.numTransferBufferSize.Location = new System.Drawing.Point(78, 17);
-            this.numTransferBufferSize.Maximum = new decimal(new int[] {
-            131072,
-            0,
-            0,
-            0});
-            this.numTransferBufferSize.Minimum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-            this.numTransferBufferSize.Name = "numTransferBufferSize";
-            this.numTransferBufferSize.Size = new System.Drawing.Size(215, 21);
-            this.numTransferBufferSize.TabIndex = 0;
-            this.numTransferBufferSize.Value = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(9, 21);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(65, 12);
-            this.label16.TabIndex = 1;
-            this.label16.Text = "缓冲区大小";
-            // 
-            // label17
-            // 
-            this.label17.Location = new System.Drawing.Point(9, 45);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(282, 40);
-            this.label17.TabIndex = 2;
-            this.label17.Text = "设置缓冲区大小可以调节服务器性能与并发的平衡\r\n更大的缓冲区能够带来更高的传输速度，而较小的缓冲区能够在有限的内存下实现更大的并发";
+            this.button1.Location = new System.Drawing.Point(196, 76);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(92, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "打开回收站";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // FrmConfig
             // 
@@ -745,6 +769,9 @@
             this.groupBox1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numTransferBufferSize)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numFileSizeLimit)).EndInit();
@@ -772,9 +799,6 @@
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numLogCount)).EndInit();
-            this.groupBox8.ResumeLayout(false);
-            this.groupBox8.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTransferBufferSize)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -829,5 +853,7 @@
         private System.Windows.Forms.NumericUpDown numTransferBufferSize;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox chkUseRecovery;
     }
 }

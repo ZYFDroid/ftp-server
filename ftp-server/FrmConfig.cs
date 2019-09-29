@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +42,8 @@ namespace ftp_server
 
             try { numLogCount.Value = FrmMain.maxlog; } catch { }
             try { chkWriteLog.Checked = FrmMain.WriteLogToFile; } catch { }
+
+            try {chkUseRecovery.Checked =FtpServer.useRecovery; } catch { }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -66,6 +70,7 @@ namespace ftp_server
             FrmMain.maxlog = (int)numLogCount.Value;
             FrmMain.WriteLogToFile = chkWriteLog.Checked;
 
+            FtpServer.useRecovery = chkUseRecovery.Checked;
             try
             {
                 Configuration.PutConfigurations();
@@ -79,6 +84,11 @@ namespace ftp_server
                 MessageBox.Show("配置保存成功.", "保存配置");
                 DialogResult = DialogResult.OK;
             }
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            Process.Start("explorer", Path.GetFullPath(ClientConnection.recyclePath));
         }
     }
 }

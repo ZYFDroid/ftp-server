@@ -33,6 +33,8 @@ namespace ftp_server
 
         public static int transferBufferSize =4096;
 
+        public static bool useRecovery = true;
+
         internal SortedList<string, long> blockedIpAddress=new SortedList<string, long>();
         internal SortedList<string, int> blockingcount=new SortedList<string, int>();
 
@@ -61,12 +63,12 @@ namespace ftp_server
                 _checkThread = new Thread(checkUnloginedSession);
                 _checkThread.Start();
                 _listener.BeginAcceptTcpClient(HandleAcceptTcpClient, _listener);
-                ConsoleWriteLine("[Server] Server started");
+                writelog("[Server] Server started");
                 code = SocketError.Success;
                 return true;
             }
             catch (SocketException ex) {
-                ConsoleWriteLine("[Error] "+ex.Message);
+                writelog("[Error] "+ex.Message);
                 code = ex.SocketErrorCode;
                 return false;
             }
@@ -122,13 +124,13 @@ namespace ftp_server
 
                         clientConnection.HandleClient();
                     }
-                    catch (Exception ex) { ConsoleWriteLine("[SERVER_ERROR] " + ex.Message); }
+                    catch (Exception ex) { writelog("[SERVER_ERROR] " + ex.Message); }
                 }
-                catch (Exception ex){ ConsoleWriteLine("[TERM] "+ex.Message); Dispose(); }
+                catch (Exception ex){ writelog("[TERM] "+ex.Message); Dispose(); }
             }
         }
 
-        internal void ConsoleWriteLine(string str) {
+        internal void writelog(string str) {
             try
             {
                 OnConsoleWriteLine.Invoke(this, str);
@@ -149,7 +151,7 @@ namespace ftp_server
                 {
                     blockingcount.Remove(ip);
                     blockedIpAddress.Add(ip, SysClock.Mill + BanIpDuration * 60000);
-                    ConsoleWriteLine("[IPBLOCKER] Blocked " + ip);
+                    writelog("[IPBLOCKER] Blocked " + ip);
                 }
             }
             else {
@@ -222,7 +224,7 @@ namespace ftp_server
                     cln.Dispose();
                 }
                 catch (Exception ex) {
-                    ConsoleWriteLine("[ERROR] "+ex.Message);
+                    writelog("[ERROR] "+ex.Message);
                 }
             }
 
