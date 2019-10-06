@@ -664,6 +664,8 @@ namespace ftp_server
             return "550 Directory not created";
         }
 
+        string[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" };
+
         private string HandleList(string pathname,bool isFunny)
         {
             if (_passiveConn)
@@ -705,9 +707,12 @@ namespace ftp_server
                 foreach (string dir in directories)
                 {
                     DirectoryInfo d = new DirectoryInfo(dir);
-                    list.Append(String.Format("drwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", "0",d.Name)).Append("\n");
-                   
-
+                    DateTime filetime = DateTime.Now;
+                    try { 
+                    filetime = d.LastWriteTime;
+                    } catch { }
+                    string date = $"{months[filetime.Month - 1]} {filetime.ToString("dd HH\\:mm\\:ss")}";
+                    list.Append(String.Format("drwxr-xr-x 1 user group {0,13} {2} {1}", "0",d.Name,date)).Append("\n");
                 }
 
 
@@ -740,7 +745,14 @@ namespace ftp_server
                     }
                     else {
                         FileInfo f = new FileInfo(file);
-                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,13} Aug 31 00:00 {1}", f.Length, f.Name)).Append("\n");
+                        DateTime filetime = DateTime.Now;
+                        try
+                        {
+                            filetime = f.LastWriteTime;
+                        }
+                        catch { }
+                        string date = $"{months[filetime.Month - 1]} {filetime.ToString("dd HH\\:mm\\:ss")}";
+                        list.Append(String.Format("-rwxr-xr-x 1 user group {0,13} {2} {1}", f.Length, f.Name,date)).Append("\n");
                     }
                    
                 }
