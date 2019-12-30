@@ -208,8 +208,8 @@ namespace ftp_server
             string line = null;
 
             _dataClient = new TcpClient();
-            bool exitflag = true;
-            while (exitflag)
+            int exitflag = 0;
+            while (exitflag < 64)
             {
                 try
                 {
@@ -266,19 +266,22 @@ namespace ftp_server
                                 break;
                             }
                         }
+                        exitflag = 0;
                     }
-                    else {
-                        exitflag = false;
+                    else
+                    {
+                        exitflag = 99;
                     }
-                    
+
                 }
-                catch (ObjectDisposedException ex) {
-                    exitflag = false;
+                catch (ObjectDisposedException ex)
+                {
+                    exitflag = 99;
                 }
                 catch (Exception ex)
                 {
                     writelog(String.Format("[ERROR {0}@{1}] {2}", _user.Username, _user.RemoteAddress, ex.Message));
-                    if (_isFileTransfering) { exitflag = true; } else { exitflag = false; }
+                    exitflag++;
                 }
             }
             Dispose();
